@@ -5,51 +5,40 @@ namespace Oliver\Question\HTMLForm;
 use Anax\HTMLForm\FormModel;
 use Psr\Container\ContainerInterface;
 
-use Oliver\Question\Answer;
+use Oliver\Question\AnswerComment;
 
 /**
  * Form to create an item.
  */
-class AnswerQuestionForm extends FormModel
+class CommentAnswerForm extends FormModel
 {
-
-    private $questionId;
-
     /**
      * Constructor injects with DI container.
      *
      * @param Psr\Container\ContainerInterface $di a service container
      */
-    public function __construct(ContainerInterface $di, int $questionId)
+    public function __construct(ContainerInterface $di, int $answerId)
     {
         parent::__construct($di);
-
-        $this->questionId = $questionId;
-
         $this->form->create(
             [
-                "id" => "answerQuestionForm"
+                "id" => "commentAnswerForm"
             ],
             [
                 "id" => [
                     "type"     => "number",
                     "readonly" => true,
-                    "value"    => $this->questionId,
-                    "type"     => "hidden"
+                    "value"    => $answerId,
+                    "type"     => "hidden",
                 ],
                 "text" => [
-                    "type"        => "textarea",
+                    "type"        => "text",
                     "placeholder" => "Text",
                     "validation"  => ["not_empty"],
                 ],
-
-                "button" => [
-                    "type"  => "button",
-                    "value" => "Avbryt"
-                ],
                 "submit" => [
                     "type"     => "submit",
-                    "value"    => "Svara",
+                    "value"    => "Kommentera",
                     "callback" => [$this, "callbackSubmit"]
                 ],
             ]
@@ -67,19 +56,20 @@ class AnswerQuestionForm extends FormModel
      */
     public function callbackSubmit() : bool
     {
+        $answerId = $this->form->value('id');
         $text = $this->form->value('text');
 
         date_default_timezone_set("Europe/Stockholm");
         $date = date('Y-m-d H:i:s');
 
-        $answer = new Answer();
-        $answer->setDb($this->di->get('dbqb'));
+        $comment = new AnswerComment();
+        $comment->setDb($this->di->get('dbqb'));
 
-        $answer->text = $text;
-        $answer->posted = $date;
-        $answer->questionId = $this->questionId;
-        $answer->userId = $this->di->get('session')->get('userId');
-        $answer->save();
+        $comment->text = $text;
+        $comment->posted = $date;
+        $comment->answerId = $answerId;
+        $comment->userId = $this->di->get('session')->get('userId');
+        $comment->save();
 
         return true;
     }
@@ -92,11 +82,11 @@ class AnswerQuestionForm extends FormModel
      * happen when the submit callback method returns true. This method
      * can/should be implemented by the subclass for a different behaviour.
      */
-    public function callbackSuccess()
-    {
-        $this->di->get("response")->redirect("questions/$this->questionId")->send();
-        return True;
-    }
+    // public function callbackSuccess()
+    // {
+    //     $this->di->get("response")->redirect("questions")->send();
+    //     return True;
+    // }
 
 
 
@@ -106,10 +96,10 @@ class AnswerQuestionForm extends FormModel
     //  * fails. This method can/should be implemented by the subclass for a
     //  * different behaviour.
     //  */
-    public function callbackFail()
-    {
-        $this->di->get("response")->redirectSelf()->send();
-    }
+    // public function callbackFail()
+    // {
+    //     $this->di->get("response")->redirectSelf()->send();
+    // }
 
 
 }

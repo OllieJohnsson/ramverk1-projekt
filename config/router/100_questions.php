@@ -13,8 +13,8 @@ return [
         ],
         [
             "info" => "Fråga",
-            "method" => "get",
-            "path" => "{id:digit}",
+            // "method" => "get",
+            "path" => "{questionId:digit}",
             "handler" => ["\Oliver\Question\QuestionController", "getQuestion"],
         ],
         [

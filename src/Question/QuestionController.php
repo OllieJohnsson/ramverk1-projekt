@@ -9,6 +9,8 @@ use Oliver\Question\Answer;
 use Oliver\Question\Tag;
 use Oliver\Question\HTMLForm\AddQuestionForm;
 use Oliver\Question\HTMLForm\AnswerQuestionForm;
+use Oliver\Question\HTMLForm\CommentAnswerForm;
+use Oliver\Question\HTMLForm\CommentQuestionForm;
 
 use Oliver\User\User;
 
@@ -35,14 +37,14 @@ class QuestionController implements ContainerInjectableInterface
         $this->tag = new Tag();
         $this->tag->setDb($this->di->get("dbqb"));
 
-        $this->question = new Question($this->tag);
+        $answer = new Answer();
+        $answer->setDb($this->di->get("dbqb"));
+
+        $this->question = new Question($this->tag, $answer);
         $this->question->setDb($this->di->get("dbqb"));
 
         $this->user = new User();
         $this->user->setDb($this->di->get("dbqb"));
-
-
-
 
     }
 
@@ -74,7 +76,7 @@ class QuestionController implements ContainerInjectableInterface
 
 
 
-    public function getQuestion(int $id) : object
+    public function getQuestion(int $questionId) : object
     {
 
         $action = $this->di->get("session")->get("userId") ? [
@@ -90,7 +92,7 @@ class QuestionController implements ContainerInjectableInterface
             "action" => $action
         ]);
 
-        $question = $this->question->findQuestion($id);
+        $question = $this->question->findQuestion($questionId);
 
         $this->page->add("oliver/questions/question-detail", [
             "item" => $question
@@ -105,18 +107,29 @@ class QuestionController implements ContainerInjectableInterface
         $answer = new Answer($answerComment);
         $answer->setDb($this->di->get("dbqb"));
 
-        $answers = $answer->findAnswers($id);
+        $answers = $answer->findAnswers($questionId);
 
         foreach ($answers as $answer) {
-            $this->page->add("oliver/questions/answer", ["item" => $answer]);
+            $commentForm = new CommentAnswerForm($this->di, $answer->id);
+            $this->page->add("oliver/questions/answer", [
+                "item" => $answer,
+                "form" => $commentForm->getHTML()
+            ]);
         }
 
-        $form = new AnswerQuestionForm($this->di, $id);
-        $form->check();
+        if (count($answers) > 0) {
+            $commentForm->check();
+        }
 
-        $this->page->add("oliver/questions/createAnswer", [
-            "content" => $form->getHTML()
+        $answerForm = new AnswerQuestionForm($this->di, $questionId);
+        $answerForm->check();
+
+        $this->page->add("oliver/questions/create-answer", [
+            "form" => $answerForm->getHTML()
         ]);
+        // $this->page->add("anax/v2/article/default", [
+        //     "content" => $form->getHTML(),
+        // ]);
 
         return $this->page->render([
             "title" => $question->title

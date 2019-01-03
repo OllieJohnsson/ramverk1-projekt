@@ -3,6 +3,7 @@
 namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
+use Anax\TextFilter\TextFilter;
 
 /**
  * A database driven model using the Active Record design pattern.
@@ -31,7 +32,21 @@ class Answer extends ActiveRecordModel
 
     public function __construct(AnswerComment $answerComment = null)
     {
+
         $this->answerComment = $answerComment;
+    }
+
+
+    private function prepareAnswers(array $answers)
+    {
+        foreach ($answers as $answer) {
+            $answer->gravatar = gravatar($answer->email);
+            $answer->comments = $this->answerComment ? $this->answerComment->findComments($answer->id) : null;
+
+            $textFilter = new TextFilter();
+            $answer->text = $textFilter->doFilter($answer->text, ["markdown"]);
+        }
+        return $answers;
     }
 
 
@@ -39,20 +54,32 @@ class Answer extends ActiveRecordModel
     {
         $this->checkDb();
         $answers = $this->db->connect()
-                        ->select()
-                        ->from($this->tableName)
-                        ->join("user", "user.id = answer.userId")
+                        ->select("a.id, a.text, a.posted, a.questionId, a.userId, u.username, u.email")
+                        ->from("$this->tableName AS a")
+                        ->join("user AS u", "u.id = a.userId")
                         ->where("questionId = $questionId")
                         ->execute()
                         ->fetchAllClass(get_class($this));
 
+        return $this->prepareAnswers($answers);
+    }
 
 
-        foreach ($answers as $answer) {
-            $answer->gravatar = gravatar($answer->email);
-            $answer->comments = $this->answerComment->findAllWhere("answerId = ?", $answer->id);
-        }
-        return $answers;
+    public function findLatest(int $questionId)
+    {
+        $this->checkDb();
+        $answer = $this->db->connect()
+                        ->select("a.id, a.text, a.posted, a.questionId, a.userId, u.username, u.email")
+                        ->from("$this->tableName AS a")
+                        ->join("user AS u", "u.id = a.userId")
+                        ->limit("1")
+                        ->where("a.questionId = $questionId")
+                        ->orderby("a.posted desc")
+                        ->execute()
+                        ->fetchAllClass(get_class($this));
+
+        // return $this->prepareAnswers($answer);
+        return count($answer) > 0 ? $answer[0] : null;
     }
 
 }

@@ -100,6 +100,7 @@ class AddQuestionForm extends FormModel
         $question = new Question();
         $question->setDb($this->di->get("dbqb"));
 
+        date_default_timezone_set("Europe/Stockholm");
         $date = date('Y-m-d H:i:s');
 
         $question->title  = $this->form->value("title");

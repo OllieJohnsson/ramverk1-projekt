@@ -24,7 +24,7 @@ h1 {
 }
 .smallGrayText {
   font-size: 0.8rem;
-  color: #888;
+  color: #D3D8E1;
 }
 .largeText {
   font-size: 2.5rem;
@@ -213,7 +213,8 @@ article .figure.right {
   border: none;
 }
 .button,
-#form-element-submit {
+#form-element-submit,
+#form-element-button {
   background-color: #53d794;
   color: #1b7648;
   border: none;
@@ -223,7 +224,8 @@ article .figure.right {
   cursor: pointer;
 }
 .button:hover,
-#form-element-submit:hover {
+#form-element-submit:hover,
+#form-element-button:hover {
   color: white;
 }
 .icon-button a {
@@ -233,12 +235,19 @@ article .figure.right {
 form {
   margin: 2rem auto;
 }
+form label,
+form br,
+form .cf-desc {
+  display: none;
+}
 input,
-select {
+select,
+textarea {
   padding: 0.5rem;
   border-radius: 0.3rem;
-  border: 1px solid #ccc;
+  border: 1px solid #D3D8E1;
   margin: 0 0.5rem;
+  resize: none;
 }
 .input-row {
   display: flex;
@@ -263,6 +272,36 @@ fieldset > * {
 }
 fieldset > * {
   margin: 0.5rem;
+}
+#commentAnswerForm {
+  margin: 0;
+}
+#commentAnswerForm fieldset {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  box-shadow: none;
+  padding: 0;
+  width: 100%;
+}
+#commentAnswerForm fieldset p:first-of-type {
+  width: 100%;
+}
+#commentAnswerForm fieldset input {
+  margin: 0;
+}
+#commentAnswerForm fieldset #form-element-text {
+  width: 100%;
+}
+#answerQuestionForm fieldset {
+  align-items: unset;
+}
+#answerQuestionForm fieldset textarea {
+  margin: 0;
+}
+.buttonbar {
+  display: flex;
+  justify-content: center;
 }
 .outer-wrap-footer {
   background-color: #53d794;
@@ -343,10 +382,13 @@ td {
 }
 .question .user-area p {
   font-size: 0.8rem;
-  color: #888;
+  color: #D3D8E1;
 }
 .question .user-area > * {
   margin: 0;
+}
+.question .comment-area {
+  width: unset;
 }
 .question .questionText {
   margin-top: 2rem;
@@ -361,6 +403,35 @@ td {
 }
 #answerQuestionForm {
   width: 100%;
+}
+.comment-area {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  justify-content: flex-end;
+  align-items: center;
+}
+.comment-area .count {
+  font-size: 0.8rem;
+  color: #D3D8E1;
+  margin-bottom: 1rem;
+}
+.comment-area .showCommentsButton img {
+  margin-left: 0.5rem;
+  margin-top: 0.4rem;
+}
+.replies {
+  margin-top: 2rem;
+  max-height: 20rem;
+  overflow-y: scroll;
+}
+.replies .text {
+  text-align: left;
+  justify-content: stretch;
+  margin-left: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 .container-row {
   display: flex;

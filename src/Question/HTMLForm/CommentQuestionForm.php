@@ -6,12 +6,12 @@ use Anax\HTMLForm\FormModel;
 use Psr\Container\ContainerInterface;
 // use Oliver\Question\Question;
 // use Oliver\Question\Tag;
-use Oliver\Question\Comment;
+use Oliver\Question\QuestionComment;
 
 /**
  * Form to create an item.
  */
-class CommentForm extends FormModel
+class CommentQuestionForm extends FormModel
 {
     /**
      * Constructor injects with DI container.
@@ -23,27 +23,23 @@ class CommentForm extends FormModel
         parent::__construct($di);
         $this->form->create(
             [
-                "id" => "answerQuestionForm"
+                "id" => "commentQuestionForm"
             ],
             [
                 "id" => [
                     "type"     => "number",
                     "readonly" => true,
-                    "value"    => $questionId,
+                    "value"    => $id,
                 ],
                 "text" => [
-                    "type"        => "textarea",
+                    "type"        => "text",
                     "placeholder" => "Text",
                     "validation"  => ["not_empty"],
                 ],
 
-                "button" => [
-                    "type"  => "button",
-                    "value" => "Avbryt"
-                ],
                 "submit" => [
                     "type"     => "submit",
-                    "value"    => "Svara",
+                    "value"    => "Kommentera",
                     "callback" => [$this, "callbackSubmit"]
                 ],
             ]
@@ -62,9 +58,11 @@ class CommentForm extends FormModel
     public function callbackSubmit() : bool
     {
         $text = $this->form->value('text');
+
+        date_default_timezone_set("Europe/Stockholm");
         $date = date('Y-m-d H:i:s');
 
-        $comment = new Comment();
+        $comment = new QuestionComment();
         $comment->setDb($this->di->get('dbqb'));
 
         $comment->text = $text;

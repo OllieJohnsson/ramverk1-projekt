@@ -1,13 +1,21 @@
 form {
     margin: 2rem auto;
+
+    label,
+    br,
+    .cf-desc {
+        display: none;
+    }
 }
 
 input,
-select {
+select,
+textarea {
     padding: 0.5rem;
     border-radius: 0.3rem;
-    border: 1px solid #ccc;
+    border: 1px solid @lightGrayColor;
     margin: 0 0.5rem;
+    resize: none;
 }
 
 
@@ -25,4 +33,41 @@ fieldset {
     margin: 0;
     border: none;
     align-items: center;
+}
+
+
+#commentAnswerForm {
+    margin: 0;
+    fieldset {
+        .container-row();
+        box-shadow: none;
+        padding: 0;
+        width: 100%;
+
+        p:first-of-type {
+            width: 100%;
+        }
+        input {
+            margin: 0;
+        }
+        #form-element-text {
+            width: 100%;
+        }
+    }
+}
+
+
+#answerQuestionForm {
+    fieldset {
+        align-items: unset;
+
+        textarea {
+            margin: 0;
+        }
+    }
+}
+
+.buttonbar {
+    display: flex;
+    justify-content: center;
 }

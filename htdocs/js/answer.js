@@ -1,6 +1,8 @@
 (function() {
+
     let answerButton = document.getElementById('svaraButton');
     let answerForm = document.getElementById('answerQuestionForm');
+
 
     if (!answerButton || !answerForm) {
         return;
@@ -21,8 +23,5 @@
     cancelButton.addEventListener('click', function() {
         answerForm.querySelector("#form-element-text").value = "";
         answerForm.hidden = true;
-
     });
-
-
 })();

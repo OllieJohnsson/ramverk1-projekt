@@ -4,7 +4,8 @@ namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
 
-use Oliver\Question\Tag;
+// use Oliver\Question\Tag;
+use Oliver\Question\Answer;
 
 /**
  * A database driven model using the Active Record design pattern.
@@ -28,10 +29,12 @@ class Question extends ActiveRecordModel
     public $userId;
 
     private $tag;
+    private $answer;
 
-    public function __construct(Tag $tag = null)
+    public function __construct(Tag $tag = null, Answer $answer = null)
     {
         $this->tag = $tag;
+        $this->answer = $answer;
     }
 
 
@@ -45,14 +48,17 @@ class Question extends ActiveRecordModel
     {
         $this->checkDb();
         $questions = $this->db->connect()
-                        ->select("q.id as questionId, q.title, q.text, q.posted, u.id as userId, u.username, u.email")
+                        ->select("q.id as questionId, q.title, q.text, q.posted, u.id as userId, u.username, u.email, MAX(a.posted) as latestPosted")
                         ->from("$this->tableName as q")
+                        ->leftJoin("answer as a", "a.questionId = q.id")
                         ->join("user as u", "u.id = q.userId")
-                        ->orderby("posted asc")
+                        ->groupby("q.id")
+                        ->orderby("COALESCE(GREATEST(q.posted, MAX(a.posted)), q.posted) DESC")
                         ->execute()
                         ->fetchAllClass(get_class($this));
         foreach ($questions as $question) {
             $question->gravatar = gravatar($question->email);
+            $question->latestAnswer = $this->answer->findLatest($question->questionId);
         }
         return $questions;
     }
