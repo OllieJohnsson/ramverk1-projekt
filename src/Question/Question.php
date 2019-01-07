@@ -3,15 +3,16 @@
 namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
+use Anax\Commons\ContainerInjectableInterface;
+use Anax\Commons\ContainerInjectableTrait;
 
-// use Oliver\Question\Tag;
-use Oliver\Question\Answer;
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class Question extends ActiveRecordModel
+class Question extends ActiveRecordModel implements ContainerInjectableInterface
 {
+    use ContainerInjectableTrait;
     /**
      * @var string $tableName name of the database table.
      */
@@ -28,15 +29,6 @@ class Question extends ActiveRecordModel
     public $posted;
     public $userId;
 
-    private $tag;
-    private $answer;
-
-    public function __construct(Tag $tag = null, Answer $answer = null)
-    {
-        $this->tag = $tag;
-        $this->answer = $answer;
-    }
-
 
     public function getLastId()
     {
@@ -48,71 +40,68 @@ class Question extends ActiveRecordModel
     {
         $this->checkDb();
         $questions = $this->db->connect()
-                        ->select("q.id as questionId, q.title, q.text, q.posted, u.id as userId, u.username, u.email, MAX(a.posted) as latestPosted")
+                        ->select("q.id, q.title, q.text, q.posted, q.userId, MAX(a.posted)")
                         ->from("$this->tableName as q")
                         ->leftJoin("answer as a", "a.questionId = q.id")
-                        ->join("user as u", "u.id = q.userId")
                         ->groupby("q.id")
                         ->orderby("COALESCE(GREATEST(q.posted, MAX(a.posted)), q.posted) DESC")
                         ->execute()
                         ->fetchAllClass(get_class($this));
+
         foreach ($questions as $question) {
-            $question->gravatar = gravatar($question->email);
-            $question->latestAnswer = $this->answer->findLatest($question->questionId);
+            $question->title = $this->di->get("textfilter")->doFilter($question->title, "markdown");
+            $question->creator = $this->di->get("user")->findUser($question->userId);
+            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 30);
+            $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
         }
         return $questions;
     }
 
 
 
-    public function findQuestion($id)
+    public function findQuestion($questionId)
     {
-        $this->checkDb();
-        $question = $this->db->connect()
-                        ->select()
-                        ->from($this->tableName)
-                        ->join("user", "user.id = question.userId")
-                        ->where("question.id = $id")
-                        ->execute()
-                        ->fetchAllClass(get_class($this))[0];
-
-        $question->gravatar = gravatar($question->email);
-        $question->tags = $this->tag->findTags($id);
-        $question->comments = $this->getComments($id);
+        $question = $this->findById($questionId);
+        $question->title = $this->di->get("textfilter")->doFilter($question->title, "markdown");
+        $question->text = $this->di->get("textfilter")->doFilter($question->text, "markdown");
+        $question->creator = $this->di->get("user")->findUser($question->userId);
+        $question->tags = $this->di->get("tag")->findTagsForQuestion($questionId);
+        $question->comments = $this->di->get("comment")->findComments("questionComment", $questionId);
+        $question->answers = $this->di->get("answer")->findAnswers($questionId);
 
         return $question;
     }
 
 
-    private function getComments(int $id)
-    {
-        return $this->db->connect()
-                        ->select()
-                        ->from('questionComment')
-                        ->where("questionComment.questionId = $id")
-                        ->execute()
-                        ->fetchAllClass(get_class($this));
-    }
 
-
-
-    public function filter($tagId)
+    public function findAllWithTag($tagId)
     {
         $this->checkDb();
         $questions = $this->db->connect()
-                        ->select()
-                        ->from($this->tableName)
-                        ->join("user", "user.id = question.userId")
-                        ->join("questionTag", "questionTag.questionId = question.id")
+                        ->select("q.id, q.title, q.text, q.posted, q.userId, MAX(a.posted)")
+                        ->from("$this->tableName as q")
+                        ->leftJoin("answer as a", "a.questionId = q.id")
+                        ->join("questionTag", "questionTag.questionId = q.id")
                         ->join("tag", "tag.id = questionTag.tagId")
                         ->where("tag.id = $tagId")
+                        ->groupby("q.id")
+                        ->orderby("COALESCE(GREATEST(q.posted, MAX(a.posted)), q.posted) DESC")
                         ->execute()
                         ->fetchAllClass(get_class($this));
 
         foreach ($questions as $question) {
-            $question->id = $question->questionId;
-            $question->gravatar = gravatar($question->email);
+            $question->creator = $this->di->get("user")->findUser($question->userId);
+            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 30);
+            $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
         }
         return $questions;
     }
+
+
+    public function findAllByUser($userId)
+    {
+        return $this->findAllWhere("userId = ?", $userId);
+    }
+
+
 }

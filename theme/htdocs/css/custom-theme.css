@@ -117,7 +117,7 @@ body * {
 .outer-wrap-main {
   min-height: 40rem;
   background-color: #fcfcff;
-  color: #222;
+  color: #333;
 }
 .inner-wrap-main,
 .inner-wrap-breadcrumb {
@@ -273,10 +273,12 @@ fieldset > * {
 fieldset > * {
   margin: 0.5rem;
 }
-#commentAnswerForm {
+#answerCommentForm,
+#questionCommentForm {
   margin: 0;
 }
-#commentAnswerForm fieldset {
+#answerCommentForm fieldset,
+#questionCommentForm fieldset {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -284,13 +286,16 @@ fieldset > * {
   padding: 0;
   width: 100%;
 }
-#commentAnswerForm fieldset p:first-of-type {
+#answerCommentForm fieldset p:first-of-type,
+#questionCommentForm fieldset p:first-of-type {
   width: 100%;
 }
-#commentAnswerForm fieldset input {
+#answerCommentForm fieldset input,
+#questionCommentForm fieldset input {
   margin: 0;
 }
-#commentAnswerForm fieldset #form-element-text {
+#answerCommentForm fieldset #form-element-text,
+#questionCommentForm fieldset #form-element-text {
   width: 100%;
 }
 #answerQuestionForm fieldset {
@@ -379,6 +384,7 @@ td {
 .question .user-area {
   justify-content: center;
   margin-left: 1rem;
+  margin-right: 1rem;
 }
 .question .user-area p {
   font-size: 0.8rem;
@@ -386,6 +392,9 @@ td {
 }
 .question .user-area > * {
   margin: 0;
+}
+.question .user-area .title {
+  margin-bottom: 0.2rem;
 }
 .question .comment-area {
   width: unset;
@@ -395,6 +404,10 @@ td {
 }
 .question .tags-area {
   margin-top: 0;
+  color: #D3D8E1;
+}
+.question h1 {
+  margin-bottom: 0.2rem;
 }
 .commentButton {
   background-color: unset;
@@ -412,19 +425,20 @@ td {
   justify-content: flex-end;
   align-items: center;
 }
-.comment-area .count {
-  font-size: 0.8rem;
-  color: #D3D8E1;
-  margin-bottom: 1rem;
-}
 .comment-area .showCommentsButton img {
   margin-left: 0.5rem;
   margin-top: 0.4rem;
+}
+.count {
+  font-size: 0.8rem;
+  color: #D3D8E1;
+  margin-bottom: 1rem;
 }
 .replies {
   margin-top: 2rem;
   max-height: 20rem;
   overflow-y: scroll;
+  overflow-x: auto;
 }
 .replies .text {
   text-align: left;

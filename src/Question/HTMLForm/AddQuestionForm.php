@@ -4,6 +4,7 @@ namespace Oliver\Question\HTMLForm;
 
 use Anax\HTMLForm\FormModel;
 use Psr\Container\ContainerInterface;
+
 use Oliver\Question\Question;
 use Oliver\Question\Tag;
 use Oliver\Question\QuestionTag;
@@ -13,14 +14,16 @@ use Oliver\Question\QuestionTag;
  */
 class AddQuestionForm extends FormModel
 {
+    private $question;
     /**
      * Constructor injects with DI container.
      *
      * @param Psr\Container\ContainerInterface $di a service container
      */
-    public function __construct(ContainerInterface $di)
+    public function __construct(ContainerInterface $di, Question $question)
     {
         parent::__construct($di);
+        $this->question = $question;
         $this->form->create(
             [
                 "id" => "addQuestionForm"
@@ -71,7 +74,6 @@ class AddQuestionForm extends FormModel
             $questionTag->setDb($this->di->get("dbqb"));
 
             $lastTagId;
-
             try {
                 $tag->name = $tagName;
                 $tag->save();
@@ -97,20 +99,20 @@ class AddQuestionForm extends FormModel
      */
     public function callbackSubmit() : bool
     {
-        $question = new Question();
-        $question->setDb($this->di->get("dbqb"));
+        // $question = new Question();
+        $this->question->setDb($this->di->get("dbqb"));
 
         date_default_timezone_set("Europe/Stockholm");
         $date = date('Y-m-d H:i:s');
 
-        $question->title  = $this->form->value("title");
-        $question->text = $this->form->value("text");
-        $question->userId = $this->di->get("session")->get("userId");
-        $question->posted = $date;
-        $question->save();
+        $this->question->title  = $this->form->value("title");
+        $this->question->text = $this->form->value("text");
+        $this->question->userId = $this->di->get("session")->get("userId");
+        $this->question->posted = $date;
+        $this->question->save();
 
         if ($this->form->value("allTags") != "") {
-            $this->addTags($question);
+            $this->addTags($this->question);
         }
         return true;
     }

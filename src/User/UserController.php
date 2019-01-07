@@ -4,10 +4,14 @@ namespace Oliver\User;
 
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
+
 use Oliver\User\HTMLForm\LoginUserForm;
 use Oliver\User\HTMLForm\CreateUserForm;
 use Oliver\User\HTMLForm\EditUserForm;
-use Oliver\User\User;
+
+// use Oliver\Question\Question;
+// use Oliver\Question\Answer;
+// use Oliver\Question\Comment;
 
 // use Anax\Route\Exception\ForbiddenException;
 // use Anax\Route\Exception\NotFoundException;
@@ -26,7 +30,10 @@ class UserController implements ContainerInjectableInterface
      * @var $data description
      */
     //private $data;
-
+    private $page;
+    private $user;
+    private $question;
+    private $answer;
 
 
     /**
@@ -39,8 +46,9 @@ class UserController implements ContainerInjectableInterface
     public function initialize() : void
     {
         $this->page = $this->di->get("page");
-        $this->user = new User();
-        $this->user->setDb($this->di->get("dbqb"));
+        $this->user = $this->di->get('user');
+        $this->question = $this->di->get('question');
+        $this->answer = $this->di->get('answer');
     }
 
 
@@ -73,11 +81,14 @@ class UserController implements ContainerInjectableInterface
 
 
 
-    public function getUser(int $id)
+    public function getUser(int $userId)
     {
-        $user = $this->user->findUser($id, 150);
+        $user = $this->user->findUser($userId, 150);
 
-        $action = $id === $this->di->get('session')->get('userId') ? [
+        $questions = $this->question->findAllByUser($userId);
+        $answers = $this->answer->findAllByUser($userId);
+
+        $action = $userId === $this->di->get('session')->get('userId') ? [
             "link" => "users/edit",
             "name" => '<img src="https://img.icons8.com/ios-glyphs/30/53d794/pencil.png">'
         ] : null;
@@ -90,7 +101,26 @@ class UserController implements ContainerInjectableInterface
             ],
             "action" => $action
         ]);
-        $this->page->add("oliver/users/userInfo", ["user" => $user]);
+
+        $this->page->add("oliver/users/userInfo", [
+            "user" => $user
+        ]);
+
+        foreach ($questions as $question) {
+            $this->page->add("oliver/users/questions", [
+                "title" => "Frågor",
+                "id" => $question->id,
+                "name" => $question->title
+            ]);
+        }
+
+        foreach ($answers as $answer) {
+            $this->page->add("oliver/users/questions", [
+                "title" => "Svar",
+                "id" => $answer->questionId,
+                "name" => $answer->text
+            ]);
+        }
 
         return $this->page->render([
             "title" => $user->username

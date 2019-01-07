@@ -60,11 +60,11 @@ CREATE TABLE `questionComment` (
     `id` INT AUTO_INCREMENT NOT NULL,
     `text` VARCHAR(256) NOT NULL,
     `posted` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `questionId` INT,
+    `targetId` INT,
     `userId` INT,
 
 	PRIMARY KEY (id),
-    FOREIGN KEY (questionId) REFERENCES `question`(id),
+    FOREIGN KEY (targetId) REFERENCES `question`(id),
 	FOREIGN KEY (userId) REFERENCES `user`(id)
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
 
@@ -73,11 +73,11 @@ CREATE TABLE `answerComment` (
     `id` INT AUTO_INCREMENT NOT NULL,
     `text` VARCHAR(256) NOT NULL,
     `posted` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `answerId` INT,
+    `targetId` INT,
     `userId` INT,
 
 	PRIMARY KEY (id),
-    FOREIGN KEY (answerId) REFERENCES `answer`(id),
+    FOREIGN KEY (targetId) REFERENCES `answer`(id),
 	FOREIGN KEY (userId) REFERENCES `user`(id)
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
 
@@ -97,6 +97,7 @@ CREATE TABLE questionTag (
 	FOREIGN KEY (questionId) REFERENCES `question`(id),
     FOREIGN KEY (tagId) REFERENCES `tag`(id)
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
+
 
 
 

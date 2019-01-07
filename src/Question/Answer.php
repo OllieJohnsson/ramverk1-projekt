@@ -3,19 +3,20 @@
 namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
-use Anax\TextFilter\TextFilter;
+use Anax\Commons\ContainerInjectableInterface;
+use Anax\Commons\ContainerInjectableTrait;
+
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class Answer extends ActiveRecordModel
+class Answer extends ActiveRecordModel implements ContainerInjectableInterface
 {
+    use ContainerInjectableTrait;
     /**
      * @var string $tableName name of the database table.
      */
     protected $tableName = "answer";
-
-
 
     /**
      * Columns in the table.
@@ -28,58 +29,40 @@ class Answer extends ActiveRecordModel
     public $questionId;
     public $userId;
 
-    private $answerComment;
 
-    public function __construct(AnswerComment $answerComment = null)
+    public function findAnswers(int $questionId, int $limit = 0, int $gravatarSize = 60) : array
     {
+        $answers = $this->findAllWhere("questionId = ?", $questionId);
 
-        $this->answerComment = $answerComment;
-    }
+        if (count($answers) === 0) {
+            return [];
+        }
 
-
-    private function prepareAnswers(array $answers)
-    {
         foreach ($answers as $answer) {
-            $answer->gravatar = gravatar($answer->email);
-            $answer->comments = $this->answerComment ? $this->answerComment->findComments($answer->id) : null;
+            $answer->text = $this->di->get("textfilter")->doFilter($answer->text, "markdown");
+            $answer->creator = $this->di->get("user")->findUser($answer->userId, $gravatarSize);
+            $answer->comments = $this->di->get("comment")->findComments("answerComment", $answer->id);
+        }
 
-            $textFilter = new TextFilter();
-            $answer->text = $textFilter->doFilter($answer->text, ["markdown"]);
+        if ($limit === 1) {
+            return array_slice($answers, -$limit);
+        }
+        if ($limit > 0) {
+            return array_slice($answers, -$limit);
         }
         return $answers;
     }
 
 
-    public function findAnswers(int $questionId)
+    public function countAnswers(int $questionId)
     {
-        $this->checkDb();
-        $answers = $this->db->connect()
-                        ->select("a.id, a.text, a.posted, a.questionId, a.userId, u.username, u.email")
-                        ->from("$this->tableName AS a")
-                        ->join("user AS u", "u.id = a.userId")
-                        ->where("questionId = $questionId")
-                        ->execute()
-                        ->fetchAllClass(get_class($this));
-
-        return $this->prepareAnswers($answers);
+        return count($this->findAllWhere("questionId = ?", $questionId));
     }
 
 
-    public function findLatest(int $questionId)
+    public function findAllByUser($userId)
     {
-        $this->checkDb();
-        $answer = $this->db->connect()
-                        ->select("a.id, a.text, a.posted, a.questionId, a.userId, u.username, u.email")
-                        ->from("$this->tableName AS a")
-                        ->join("user AS u", "u.id = a.userId")
-                        ->limit("1")
-                        ->where("a.questionId = $questionId")
-                        ->orderby("a.posted desc")
-                        ->execute()
-                        ->fetchAllClass(get_class($this));
-
-        // return $this->prepareAnswers($answer);
-        return count($answer) > 0 ? $answer[0] : null;
+        return $this->findAllWhere("userId = ?", $userId);
     }
 
 }

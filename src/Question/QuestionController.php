@@ -4,17 +4,9 @@ namespace Oliver\Question;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
-use Oliver\Question\Question;
-use Oliver\Question\Answer;
-use Oliver\Question\Tag;
 use Oliver\Question\HTMLForm\AddQuestionForm;
 use Oliver\Question\HTMLForm\AnswerQuestionForm;
-use Oliver\Question\HTMLForm\CommentAnswerForm;
-use Oliver\Question\HTMLForm\CommentQuestionForm;
-
-use Oliver\User\User;
-
-
+use Oliver\Question\HTMLForm\CommentForm;
 
 
 /**
@@ -25,27 +17,18 @@ class QuestionController implements ContainerInjectableInterface
     use ContainerInjectableTrait;
 
     private $page;
-    private $question;
     private $user;
+    private $question;
     private $answer;
     private $tag;
 
     public function initialize() : void
     {
         $this->page = $this->di->get("page");
-
-        $this->tag = new Tag();
-        $this->tag->setDb($this->di->get("dbqb"));
-
-        $answer = new Answer();
-        $answer->setDb($this->di->get("dbqb"));
-
-        $this->question = new Question($this->tag, $answer);
-        $this->question->setDb($this->di->get("dbqb"));
-
-        $this->user = new User();
-        $this->user->setDb($this->di->get("dbqb"));
-
+        $this->user = $this->di->get('user');
+        $this->question = $this->di->get('question');
+        $this->answer = $this->di->get('answer');
+        $this->tag = $this->di->get('tag');
     }
 
 
@@ -94,31 +77,24 @@ class QuestionController implements ContainerInjectableInterface
 
         $question = $this->question->findQuestion($questionId);
 
+        $commentQuestionForm = new CommentForm($this->di, $question->id, "questionComment");
+        $commentQuestionForm->check();
+
         $this->page->add("oliver/questions/question-detail", [
-            "item" => $question
+            "item" => $question,
+            "form" => $commentQuestionForm->getHTML()
         ]);
 
-
-
-
-        $answerComment = new AnswerComment();
-        $answerComment->setDb($this->di->get("dbqb"));
-
-        $answer = new Answer($answerComment);
-        $answer->setDb($this->di->get("dbqb"));
-
-        $answers = $answer->findAnswers($questionId);
-
-        foreach ($answers as $answer) {
-            $commentForm = new CommentAnswerForm($this->di, $answer->id);
+        foreach ($question->answers as $answer) {
+            $commentAnswerForm = new CommentForm($this->di, $answer->id, "answerComment");
             $this->page->add("oliver/questions/answer", [
                 "item" => $answer,
-                "form" => $commentForm->getHTML()
+                "form" => $commentAnswerForm->getHTML()
             ]);
         }
 
-        if (count($answers) > 0) {
-            $commentForm->check();
+        if (count($question->answers) > 0) {
+            $commentAnswerForm->check();
         }
 
         $answerForm = new AnswerQuestionForm($this->di, $questionId);
@@ -127,9 +103,6 @@ class QuestionController implements ContainerInjectableInterface
         $this->page->add("oliver/questions/create-answer", [
             "form" => $answerForm->getHTML()
         ]);
-        // $this->page->add("anax/v2/article/default", [
-        //     "content" => $form->getHTML(),
-        // ]);
 
         return $this->page->render([
             "title" => $question->title
@@ -149,7 +122,7 @@ class QuestionController implements ContainerInjectableInterface
             "title" => $title
         ]);
 
-        $form = new AddQuestionForm($this->di);
+        $form = new AddQuestionForm($this->di, $this->question);
         $form->check();
 
         $this->page->add("anax/v2/article/default", [
@@ -162,9 +135,9 @@ class QuestionController implements ContainerInjectableInterface
     }
 
 
-    public function filterQuestions(int $id) : object
+    public function filterQuestions(int $tagId) : object
     {
-        $tagName = $this->tag->getName($id);
+        $tagName = $this->tag->getName($tagId);
         $title = "#$tagName";
 
         $this->page->add("oliver/header", [
@@ -175,7 +148,7 @@ class QuestionController implements ContainerInjectableInterface
             "title" => $title
         ]);
 
-        $questions = $this->question->filter($id);
+        $questions = $this->question->findAllWithTag($tagId);
 
         foreach ($questions as $question) {
             $this->page->add("oliver/questions/question", ["item" => $question]);

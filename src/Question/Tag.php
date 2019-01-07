@@ -14,8 +14,6 @@ class Tag extends ActiveRecordModel
      */
     protected $tableName = "tag";
 
-
-
     /**
      * Columns in the table.
      *
@@ -31,11 +29,7 @@ class Tag extends ActiveRecordModel
     }
 
 
-
-
-
-
-    public function findTags($questionId)
+    public function findTagsForQuestion($questionId)
     {
         $this->checkDb();
         return $this->db->connect()
@@ -50,13 +44,6 @@ class Tag extends ActiveRecordModel
 
     public function getName($id)
     {
-        $this->checkDb();
-        $res = $this->db->connect()
-                        ->select("name")
-                        ->from($this->tableName)
-                        ->where("id = $id")
-                        ->execute()
-                        ->fetchAllClass(get_class($this))[0];
-        return $res->name;
+        return $this->findById($id)->name;
     }
 }

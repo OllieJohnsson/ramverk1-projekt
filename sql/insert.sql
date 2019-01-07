@@ -46,14 +46,14 @@ VALUES
 
 
 
-INSERT INTO `questionComment`(`text`, `questionId`, `userId`)
+INSERT INTO `questionComment`(`text`, `targetId`, `userId`)
 VALUES
 ('Coolt!!!', '1', '1')
 ;
 
 
 
-INSERT INTO `answerComment`(`text`, `answerId`, `userId`)
+INSERT INTO `answerComment`(`text`, `targetId`, `userId`)
 VALUES
 ('Hahaha!', '1',  '1')
 ;

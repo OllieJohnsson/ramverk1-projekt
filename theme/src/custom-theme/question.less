@@ -10,11 +10,16 @@
     .user-area {
         justify-content: center;
         margin-left: 1rem;
+        margin-right: 1rem;
         p {
             .smallGrayText();
         }
         > * {
             margin: 0;
+        }
+
+        .title {
+            margin-bottom: 0.2rem;
         }
     }
 
@@ -29,8 +34,12 @@
 
     .tags-area {
         margin-top: 0;
+        color: @lightGrayColor;
     }
 
+    h1 {
+        margin-bottom: 0.2rem;
+    }
 
 }
 
@@ -51,11 +60,6 @@
     justify-content: flex-end;
     align-items: center;
 
-    .count {
-        font-size: 0.8rem;
-        color: @lightGrayColor;
-        margin-bottom: 1rem;
-    }
 
     .showCommentsButton {
         img {
@@ -65,10 +69,17 @@
     }
 }
 
+.count {
+    font-size: 0.8rem;
+    color: @lightGrayColor;
+    margin-bottom: 1rem;
+}
+
 .replies {
     margin-top: 2rem;
     max-height: 20rem;
     overflow-y: scroll;
+    overflow-x: auto;
 
     .text {
         text-align: left;

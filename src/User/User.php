@@ -3,12 +3,15 @@
 namespace Oliver\User;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
+use Anax\Commons\ContainerInjectableInterface;
+use Anax\Commons\ContainerInjectableTrait;
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class User extends ActiveRecordModel
+class User extends ActiveRecordModel implements ContainerInjectableInterface
 {
+    use ContainerInjectableTrait;
     /**
      * @var string $tableName name of the database table.
      */
@@ -27,8 +30,6 @@ class User extends ActiveRecordModel
     public $firstName;
     public $lastName;
     public $password;
-
-
 
 
 
@@ -62,16 +63,14 @@ class User extends ActiveRecordModel
 
 
 
-    // public function gravatar(int $size = 60) : string
-    // {
-    //     $rating = 'pg';
-    //     $default = "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"; // Set a Default Avatar
-    //     $email = md5(strtolower(trim($this->email)));
-    //     $gravurl = "http://www.gravatar.com/avatar/$email?d=$default&s=200&r=$rating";
-    //     return '<img style="width: '.$size.'px; height: '.$size.'px;" class="profile-image" src="'.$gravurl.'" width="{$size}" height="{$size}" border="0" alt="Avatar">';
-    // }
-
-
+    public function gravatar(string $email, int $size = 60) : string
+    {
+        $rating = 'pg';
+        $default = "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"; // Set a Default Avatar
+        $email = md5(strtolower(trim($email)));
+        $gravurl = "http://www.gravatar.com/avatar/$email?d=$default&s=200&r=$rating";
+        return '<img style="width: '.$size.'px; height: '.$size.'px;" class="profile-image" src="'.$gravurl.'" width="{$size}" height="{$size}" border="0" alt="Avatar">';
+    }
 
 
     public function findAllOrderByUsername(int $imageSize)
@@ -85,23 +84,16 @@ class User extends ActiveRecordModel
                         ->fetchAllClass(get_class($this));
 
         foreach ($users as $user) {
-            $user->gravatar = gravatar($user->email, $imageSize);
+            $user->gravatar = $this->gravatar($user->email, $imageSize);
         }
         return $users;
     }
 
 
-    public function findUser(int $id, int $imageSize) : object
+    public function findUser(int $id, int $imageSize = 60) : object
     {
-        $this->checkDb();
-        $user = $this->db->connect()
-                        ->select()
-                        ->from($this->tableName)
-                        ->where("id = $id")
-                        ->execute()
-                        ->fetchAllClass(get_class($this))[0];
-
-        $user->gravatar = gravatar($user->email, $imageSize);
+        $user = $this->findAllWhere("id = ?", $id)[0];
+        $user->gravatar = $this->gravatar($user->email, $imageSize);
         return $user;
     }
 

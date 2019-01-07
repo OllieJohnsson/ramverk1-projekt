@@ -4,39 +4,41 @@ namespace Oliver\Question\HTMLForm;
 
 use Anax\HTMLForm\FormModel;
 use Psr\Container\ContainerInterface;
-// use Oliver\Question\Question;
-// use Oliver\Question\Tag;
-use Oliver\Question\QuestionComment;
+
+use Oliver\Question\Comment;
 
 /**
  * Form to create an item.
  */
-class CommentQuestionForm extends FormModel
+class CommentForm extends FormModel
 {
+
+    private $tableName;
     /**
      * Constructor injects with DI container.
      *
      * @param Psr\Container\ContainerInterface $di a service container
      */
-    public function __construct(ContainerInterface $di, int $id)
+    public function __construct(ContainerInterface $di, int $targetId, string $tableName)
     {
         parent::__construct($di);
+        $this->tableName = $tableName;
         $this->form->create(
             [
-                "id" => "commentQuestionForm"
+                "id" => "${tableName}Form"
             ],
             [
                 "id" => [
                     "type"     => "number",
                     "readonly" => true,
-                    "value"    => $id,
+                    "value"    => $targetId,
+                    "type"     => "hidden",
                 ],
                 "text" => [
                     "type"        => "text",
                     "placeholder" => "Text",
                     "validation"  => ["not_empty"],
                 ],
-
                 "submit" => [
                     "type"     => "submit",
                     "value"    => "Kommentera",
@@ -57,16 +59,19 @@ class CommentQuestionForm extends FormModel
      */
     public function callbackSubmit() : bool
     {
+        $targetId = $this->form->value('id');
         $text = $this->form->value('text');
 
         date_default_timezone_set("Europe/Stockholm");
         $date = date('Y-m-d H:i:s');
 
-        $comment = new QuestionComment();
+        $comment = new Comment();
+        $comment->setTableName($this->tableName);
         $comment->setDb($this->di->get('dbqb'));
 
         $comment->text = $text;
         $comment->posted = $date;
+        $comment->targetId = $targetId;
         $comment->userId = $this->di->get('session')->get('userId');
         $comment->save();
 
