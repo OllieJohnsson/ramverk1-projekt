@@ -95,7 +95,7 @@ class AnswerQuestionForm extends FormModel
     public function callbackSuccess()
     {
         $this->di->get("response")->redirect("questions/$this->questionId")->send();
-        return True;
+        return true;
     }
 
 
@@ -110,6 +110,4 @@ class AnswerQuestionForm extends FormModel
     {
         $this->di->get("response")->redirectSelf()->send();
     }
-
-
 }

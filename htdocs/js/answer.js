@@ -1,5 +1,4 @@
 (function() {
-
     let answerButton = document.getElementById('svaraButton');
     let answerForm = document.getElementById('answerQuestionForm');
 
@@ -11,11 +10,11 @@
     answerForm.hidden = true;
 
     answerButton.addEventListener('click', function(event) {
-        event.preventDefault()
+        event.preventDefault();
         console.log("SVARA!!");
         answerForm.hidden = false;
-        answerForm.querySelector("#form-element-text").focus()
-        window.scrollTo(0,document.body.scrollHeight);
+        answerForm.querySelector("#form-element-text").focus();
+        window.scrollTo(0, document.body.scrollHeight);
     });
 
     let cancelButton = document.getElementById('form-element-button');

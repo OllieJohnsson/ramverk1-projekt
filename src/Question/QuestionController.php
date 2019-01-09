@@ -8,7 +8,6 @@ use Oliver\Question\HTMLForm\AddQuestionForm;
 use Oliver\Question\HTMLForm\AnswerQuestionForm;
 use Oliver\Question\HTMLForm\CommentForm;
 
-
 /**
  *
  */
@@ -32,7 +31,7 @@ class QuestionController implements ContainerInjectableInterface
     }
 
 
-    function indexActionGet() : object
+    public function indexActionGet() : object
     {
         $title = "Alla frågor";
 
@@ -80,16 +79,18 @@ class QuestionController implements ContainerInjectableInterface
         $commentQuestionForm = new CommentForm($this->di, $question->id, "questionComment");
         $commentQuestionForm->check();
 
+        $formHTML = $this->di->get('session')->get('userId') ? $commentQuestionForm->getHTML() : null;
         $this->page->add("oliver/questions/question-detail", [
             "item" => $question,
-            "form" => $commentQuestionForm->getHTML()
+            "form" => $formHTML
         ]);
 
         foreach ($question->answers as $answer) {
             $commentAnswerForm = new CommentForm($this->di, $answer->id, "answerComment");
+            $formHTML = $this->di->get('session')->get('userId') ? $commentAnswerForm->getHTML() : null;
             $this->page->add("oliver/questions/answer", [
                 "item" => $answer,
-                "form" => $commentAnswerForm->getHTML()
+                "form" => $formHTML
             ]);
         }
 

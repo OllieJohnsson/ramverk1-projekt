@@ -20,15 +20,12 @@ class EditUserForm extends FormModel
     public function __construct(ContainerInterface $di)
     {
         parent::__construct($di);
-
         $id = $this->di->get('session')->get('userId');
-        $this->user = new User();
-        $this->user->setDb($this->di->get("dbqb"));
-        $this->user->findById($id);
+        $this->user = $this->di->get("user")->findById($id);
 
         $this->form->create(
             [
-                "id" => __CLASS__,
+                "id" => "editUserForm",
             ],
             [
                 "id" => [
@@ -36,33 +33,35 @@ class EditUserForm extends FormModel
                     "validation" => ["not_empty"],
                     "readonly" => true,
                     "value" => $this->user->id,
+                    "type" => "hidden"
                 ],
                 "användarnamn" => [
                     "type"        => "text",
-                    // "description" => "Here you can place a description.",
                     "value" => $this->user->username,
                     "placeholder" => "Användarnamn",
+                    "validation" => ["not_empty"],
                 ],
                 "e-post" => [
                     "type"        => "email",
                     "value" => $this->user->email,
                     "placeholder" => "E-post",
+                    "validation" => ["not_empty"],
                 ],
                 "förnamn" => [
                     "type"        => "text",
                     "value" => $this->user->firstName,
                     "placeholder" => "Förnamn",
+                    "validation" => ["not_empty"],
                 ],
                 "efternamn" => [
                     "type"        => "text",
                     "value" => $this->user->lastName,
                     "placeholder" => "Efternamn",
+                    "validation" => ["not_empty"],
                 ],
-                "password" => [
-                    "type"        => "password",
-                    //"description" => "Here you can place a description.",
-                    //"placeholder" => "Here is a placeholder",
-                ],
+                // "password" => [
+                //     "type"        => "password",
+                // ],
 
                 "submit" => [
                     "type" => "submit",
@@ -88,14 +87,19 @@ class EditUserForm extends FormModel
         $this->user->lastName = $this->form->value("efternamn");
         $this->user->save();
 
-        $this->form->addOutput("User " . $this->user->username . " updated.");
-
         return true;
+        $this->form->addOutput("User " . $this->user->username . " updated.");
     }
 
     public function callbackSuccess()
     {
         $this->di->get("response")->redirect("users/{$this->user->id}")->send();
         return true;
+    }
+
+    public function callbackFail()
+    {
+        $this->form->addOutput("Failed");
+        $this->di->get("response")->redirectSelf()->send();
     }
 }

@@ -6,7 +6,7 @@ use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
 use Oliver\User\HTMLForm\LoginUserForm;
-use Oliver\User\HTMLForm\CreateUserForm;
+use Oliver\User\HTMLForm\RegisterUserForm;
 use Oliver\User\HTMLForm\EditUserForm;
 
 // use Oliver\Question\Question;
@@ -94,7 +94,7 @@ class UserController implements ContainerInjectableInterface
         ] : null;
 
         $this->page->add("oliver/header", [
-            "title" => $user->username,
+            "title" => "{$user->username}'s profil",
             "back" => [
                 "link" => "users",
                 "name" => "Alla användare"
@@ -103,24 +103,11 @@ class UserController implements ContainerInjectableInterface
         ]);
 
         $this->page->add("oliver/users/userInfo", [
-            "user" => $user
+            "user" => $user,
+            "questions" => $questions,
+            "answers" => $answers
         ]);
 
-        foreach ($questions as $question) {
-            $this->page->add("oliver/users/questions", [
-                "title" => "Frågor",
-                "id" => $question->id,
-                "name" => $question->title
-            ]);
-        }
-
-        foreach ($answers as $answer) {
-            $this->page->add("oliver/users/questions", [
-                "title" => "Svar",
-                "id" => $answer->questionId,
-                "name" => $answer->text
-            ]);
-        }
 
         return $this->page->render([
             "title" => $user->username
@@ -129,26 +116,19 @@ class UserController implements ContainerInjectableInterface
 
 
 
-    /**
-     * Description.
-     *
-     * @param datatype $variable Description
-     *
-     * @throws Exception
-     *
-     * @return object as a response object
-     */
     public function loginAction() : object
     {
-        $page = $this->di->get("page");
+        $this->page->add("oliver/header", [
+            "title" => "Logga in"
+        ]);
         $form = new LoginUserForm($this->di);
         $form->check();
 
-        $page->add("anax/v2/article/default", [
+        $this->page->add("anax/v2/article/default", [
             "content" => $form->getHTML(),
         ]);
 
-        return $page->render([
+        return $this->page->render([
             "title" => "A login page",
         ]);
     }
@@ -162,18 +142,12 @@ class UserController implements ContainerInjectableInterface
 
 
 
-    /**
-     * Description.
-     *
-     * @param datatype $variable Description
-     *
-     * @throws Exception
-     *
-     * @return object as a response object
-     */
     public function registerAction() : object
     {
-        $form = new CreateUserForm($this->di);
+        $this->page->add("oliver/header", [
+            "title" => "Registrera"
+        ]);
+        $form = new RegisterUserForm($this->di);
         $form->check();
 
         $this->page->add("anax/v2/article/default", [

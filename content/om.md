@@ -4,7 +4,7 @@ views:
         region: sidebar-right
         template: anax/v2/block/default
         data:
-            meta: 
+            meta:
                 type: single
                 route: block/om-kursrepo
 
@@ -12,7 +12,7 @@ views:
         region: sidebar-right
         template: anax/v2/block/default
         data:
-            meta: 
+            meta:
                 type: single
                 route: block/om-redovisa
 ---
@@ -26,3 +26,11 @@ Skriv några kloka ord om kursen?
 Lägg till en representativ bild för kursen, enligt ditt egna val.
 
 [FIGURE src=image/car.png?w=300 caption="En fin bil som demobild."]
+
+
+
+Om sidan
+
+[Github](https://github.com/OllieJohnsson/ramverk1-projekt)
+
+Om mig

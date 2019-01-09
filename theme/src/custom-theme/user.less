@@ -10,4 +10,26 @@
 .user-info {
     .baseElement();
     .container-col();
+    align-items: center;
+}
+
+
+.userList-item {
+    .baseElement();
+    .container-row {
+        justify-content: flex-start;
+        align-items: center;
+        a {
+            margin-left: 1rem;
+        }
+    }
+
+    .container-col {
+        * > {
+            margin: 0;
+        }
+        .mail {
+            color: @lightGrayColor;
+        }
+    }
 }

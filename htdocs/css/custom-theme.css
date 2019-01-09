@@ -16,6 +16,9 @@ ul {
 h1 {
   border: none;
 }
+h2 {
+  border-bottom: 1px solid #D3D8E1;
+}
 .align-left {
   text-align: left;
 }
@@ -26,12 +29,16 @@ h1 {
   font-size: 0.8rem;
   color: #D3D8E1;
 }
+.date {
+  margin-top: 0;
+}
 .largeText {
   font-size: 2.5rem;
 }
 .tagsList {
   list-style: none;
   padding: 0;
+  width: 100%;
 }
 .region-header {
   display: flex;
@@ -273,6 +280,25 @@ fieldset > * {
 fieldset > * {
   margin: 0.5rem;
 }
+fieldset p:not(.buttonbar) {
+  width: 100%;
+}
+fieldset p:not(.buttonbar) input,
+fieldset p:not(.buttonbar) textarea {
+  margin: 0;
+  width: 100%;
+}
+fieldset ul {
+  width: 100%;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+#addQuestionForm .buttonbar,
+#loginUserForm .buttonbar,
+#registerUserForm .buttonbar,
+#editUserForm .buttonbar {
+  margin-top: 1.5rem;
+}
 #answerCommentForm,
 #questionCommentForm {
   margin: 0;
@@ -304,6 +330,9 @@ fieldset > * {
 #answerQuestionForm fieldset textarea {
   margin: 0;
 }
+#answerQuestionForm fieldset p {
+  width: unset;
+}
 .buttonbar {
   display: flex;
   justify-content: center;
@@ -325,24 +354,16 @@ fieldset > * {
   text-decoration: none;
 }
 table {
-  background-color: #eee;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  color: #444;
   border-collapse: collapse;
   padding: 2rem;
   border-radius: 0.5rem;
 }
-td,
-th {
-  padding: 2rem;
-  background-color: #eee;
-}
-td {
+table tr:not(tr:first-child) {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
-.bookCover {
-  max-width: 24rem;
-  object-fit: contain;
+td,
+th {
+  padding: 1rem;
 }
 .profile-image {
   object-fit: cover;
@@ -360,9 +381,34 @@ td {
   display: flex;
   flex-direction: column;
   width: 100%;
+  align-items: center;
 }
 .user-info > * {
   margin: 1rem;
+}
+.userList-item {
+  background-color: white;
+  width: 100%;
+  padding: 2rem;
+  margin: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 80, 0.06);
+}
+.userList-item > * {
+  margin: 1rem;
+}
+.userList-item .container-row {
+  justify-content: flex-start;
+  align-items: center;
+}
+.userList-item .container-row a {
+  margin-left: 1rem;
+}
+.userList-item .container-col * {
+  margin: 0;
+}
+.userList-item .container-col .mail {
+  color: #D3D8E1;
 }
 .question {
   background-color: white;
@@ -409,6 +455,9 @@ td {
 .question h1 {
   margin-bottom: 0.2rem;
 }
+.question h1 p {
+  margin: 0;
+}
 .commentButton {
   background-color: unset;
   border: none;
@@ -447,6 +496,10 @@ td {
   margin-top: 0.5rem;
   margin-bottom: 1.5rem;
 }
+.replies .text p {
+  margin-top: 0;
+  margin-right: 1rem;
+}
 .container-row {
   display: flex;
   flex-direction: row;
@@ -475,4 +528,7 @@ td {
 }
 .spread {
   justify-content: space-between;
+}
+.align-items-center {
+  align-items: center;
 }

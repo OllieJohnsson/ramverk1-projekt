@@ -33,8 +33,34 @@ fieldset {
     margin: 0;
     border: none;
     align-items: center;
+
+    p:not(.buttonbar) {
+        width: 100%;
+        input,
+        textarea {
+            margin: 0;
+            width: 100%;
+        }
+    }
+
+
+
+    ul {
+        width: 100%;
+        margin-top: 1.5rem;
+        list-style: none;
+    }
 }
 
+
+#addQuestionForm,
+#loginUserForm,
+#registerUserForm,
+#editUserForm {
+    .buttonbar {
+        margin-top: 1.5rem;
+    }
+}
 
 #answerCommentForm,
 #questionCommentForm {
@@ -54,6 +80,7 @@ fieldset {
         #form-element-text {
             width: 100%;
         }
+
     }
 }
 
@@ -64,6 +91,9 @@ fieldset {
 
         textarea {
             margin: 0;
+        }
+        p {
+            width: unset;
         }
     }
 }

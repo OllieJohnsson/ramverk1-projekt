@@ -4,7 +4,6 @@ namespace Oliver\User\HTMLForm;
 
 use Anax\HTMLForm\FormModel;
 use Psr\Container\ContainerInterface;
-use Oliver\User\User;
 
 /**
  * Example of FormModel implementation.
@@ -22,19 +21,17 @@ class LoginUserForm extends FormModel
 
         $this->form->create(
             [
-                "id" => __CLASS__,
+                "id" => "loginUserForm",
             ],
             [
                 "username" => [
                     "type"        => "text",
-                    //"description" => "Here you can place a description.",
-                    //"placeholder" => "Here is a placeholder",
+                    "placeholder" => "Användarnamn",
                 ],
 
                 "password" => [
                     "type"        => "password",
-                    //"description" => "Here you can place a description.",
-                    //"placeholder" => "Here is a placeholder",
+                    "placeholder" => "Lösenord",
                 ],
 
                 "submit" => [
@@ -45,7 +42,6 @@ class LoginUserForm extends FormModel
             ]
         );
     }
-
 
 
     /**
@@ -59,15 +55,13 @@ class LoginUserForm extends FormModel
         $username = $this->form->value("username");
         $password = $this->form->value("password");
 
-        $user = new User();
-        $user->setDb($this->di->get("dbqb"));
-
+        $user = $this->di->get("user");
         $res = $user->verifyPassword($username, $password);
 
         if (!$res) {
-           $this->form->rememberValues();
-           $this->form->addOutput("User or password did not match.");
-           return false;
+            $this->form->rememberValues();
+            $this->form->addOutput("User or password did not match.");
+            return false;
         }
 
         $this->di->get("session")->set("userId", $user->id);

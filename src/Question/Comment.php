@@ -6,7 +6,6 @@ use Anax\DatabaseActiveRecord\ActiveRecordModel;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
-
 /**
  * A database driven model using the Active Record design pattern.
  */

@@ -3,7 +3,7 @@ namespace Anax\View;
 
 ?>
 
-<div class="container-row">
+<div class="container-row align-items-center">
     <?= $item->creator->gravatar ?>
     <div class="container-col user-area">
         <a href=" <?=url("users/{$item->creator->id}")?> "><?= $item->creator->username ?></a>

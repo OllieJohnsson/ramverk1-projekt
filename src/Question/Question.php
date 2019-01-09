@@ -6,7 +6,6 @@ use Anax\DatabaseActiveRecord\ActiveRecordModel;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
-
 /**
  * A database driven model using the Active Record design pattern.
  */
@@ -104,4 +103,17 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
     }
 
 
+    public function findLatestQuestions(int $limit) : array
+    {
+        $this->checkDb();
+        $questions = $this->db->connect()
+                        ->select()
+                        ->from($this->tableName)
+                        ->orderby("posted desc")
+                        ->limit($limit)
+                        ->execute()
+                        ->fetchAllClass(get_class($this));
+        return $questions;
+
+    }
 }

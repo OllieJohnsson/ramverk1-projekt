@@ -3,9 +3,14 @@ namespace Anax\View;
 
 ?>
 
-<div class="user-info">
-    <a href="<?= url("users/{$user->id}") ?>"><h2><?= $user->username ?></h2></a>
-    <p><?= "$user->firstName $user->lastName" ?></p>
-    <p><?= $user->email ?></p>
-    <?= $user->gravatar; ?>
+<div class="userList-item">
+    <div class="container-row">
+        <?= $user->gravatar; ?>
+        <a href="<?= url("users/{$user->id}") ?>"><h1><?= $user->username ?></h1></a>
+    </div>
+    <div class="container-col">
+        <p><?= "$user->firstName $user->lastName" ?></p>
+        <p class="mail"><?= $user->email ?></p>
+    </div>
+
 </div>

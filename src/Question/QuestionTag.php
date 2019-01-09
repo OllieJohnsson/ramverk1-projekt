@@ -23,4 +23,5 @@ class QuestionTag extends ActiveRecordModel
      */
     public $questionId;
     public $tagId;
+
 }

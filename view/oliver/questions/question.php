@@ -18,7 +18,7 @@ $latestGravatar = $item->latestAnswer ? $item->latestAnswer[0]->creator->gravata
             </div>
 
             <p class="smallText title"><?= $title ?></p>
-            <div class="container-row">
+            <div class="container-row align-items-center">
                 <div class="container-col" style="margin-right: 0.5rem;">
                     <a href="<?= url("users/$latestUserId") ?>" class="smallText"><?= $latestUserName ?></a>
                     <p class="smallText" style="margin: 0;"><?= $latestPosted ?></p>

@@ -4,7 +4,7 @@ title: "Min fina titel"
 Min me-sida i kursen ramverk1
 =========================
 
-Detta innehåll är skrivet i markdown och du hittar innehållet i filen `content/index.md`.
+<!-- Detta innehåll är skrivet i markdown och du hittar innehållet i filen `content/index.md`.
 
 [FIGURE src="image/me.jpg?w=400" class="right" caption="Bild på mig"]
 
@@ -22,4 +22,12 @@ Till och från får jag för mig att börja på lite hobbies, ett år satsade ja
 
 Vi syns och hörs i forum och chatt!
 
-/Mikael
+/Mikael -->
+
+
+Förstasidan skall ge en översikt av senaste frågor tillsammans med de mest populära taggarna och de mest aktiva användarna.
+
+
+Senaste frågor
+Mest populära taggar
+Mest aktiva användare

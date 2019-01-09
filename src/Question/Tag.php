@@ -46,4 +46,21 @@ class Tag extends ActiveRecordModel
     {
         return $this->findById($id)->name;
     }
+
+
+    public function findMostPopularTags(int $limit) : array
+    {
+        $this->checkDb();
+        $tags = $this->db->connect()
+                        ->select("id, name, COUNT(name) as amount")
+                        ->from($this->tableName)
+                        ->join("questionTag", "questionTag.tagId = id")
+                        ->orderby("amount desc")
+                        ->groupby("name")
+                        ->limit($limit)
+                        ->execute()
+                        ->fetchAllClass(get_class($this));
+        return $tags;
+    }
+
 }

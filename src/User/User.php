@@ -104,4 +104,20 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
     }
 
 
+    public function findMostActiveUsers(int $limit) : array
+    {
+        $this->checkDb();
+        $users = $this->db->connect()
+                        ->select("user.*, q.questions, a.answers, qc.questionComments, ac.answerComments")
+                        ->from($this->tableName)
+                        ->join("numberOfQuestions AS q", "q.userId = user.id")
+                        ->join("numberOfAnswers AS a", "a.userId = user.id")
+                        ->join("numberOfQuestionComments AS qc", "qc.userId = user.id")
+                        ->join("numberOfAnswerComments AS ac", "ac.userId = user.id")
+                        ->orderby("(q.questions + a.answers + qc.questionComments + ac.answerComments) desc")
+                        ->limit($limit)
+                        ->execute()
+                        ->fetchAllClass(get_class($this));
+        return $users;
+    }
 }

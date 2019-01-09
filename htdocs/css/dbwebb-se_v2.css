@@ -311,7 +311,7 @@ template {
  * Font Awesome.
  */
 /*!
- * Font Awesome Free 5.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Free 5.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 .fa,
@@ -1171,11 +1171,26 @@ template {
 .fa-cloud-download-alt:before {
   content: "\f381";
 }
+.fa-cloud-meatball:before {
+  content: "\f73b";
+}
 .fa-cloud-moon:before {
   content: "\f6c3";
 }
+.fa-cloud-moon-rain:before {
+  content: "\f73c";
+}
+.fa-cloud-rain:before {
+  content: "\f73d";
+}
+.fa-cloud-showers-heavy:before {
+  content: "\f740";
+}
 .fa-cloud-sun:before {
   content: "\f6c4";
+}
+.fa-cloud-sun-rain:before {
+  content: "\f743";
 }
 .fa-cloud-upload-alt:before {
   content: "\f382";
@@ -1377,6 +1392,9 @@ template {
 }
 .fa-delicious:before {
   content: "\f1a5";
+}
+.fa-democrat:before {
+  content: "\f747";
 }
 .fa-deploydog:before {
   content: "\f38e";
@@ -1785,6 +1803,9 @@ template {
 }
 .fa-flag-checkered:before {
   content: "\f11e";
+}
+.fa-flag-usa:before {
+  content: "\f74d";
 }
 .fa-flask:before {
   content: "\f0c3";
@@ -2629,6 +2650,9 @@ template {
 .fa-mercury:before {
   content: "\f223";
 }
+.fa-meteor:before {
+  content: "\f753";
+}
 .fa-microchip:before {
   content: "\f2db";
 }
@@ -2905,6 +2929,9 @@ template {
 .fa-periscope:before {
   content: "\f3da";
 }
+.fa-person-booth:before {
+  content: "\f756";
+}
 .fa-phabricator:before {
   content: "\f3db";
 }
@@ -3001,6 +3028,9 @@ template {
 .fa-poo:before {
   content: "\f2fe";
 }
+.fa-poo-storm:before {
+  content: "\f75a";
+}
 .fa-poop:before {
   content: "\f619";
 }
@@ -3082,6 +3112,9 @@ template {
 .fa-r-project:before {
   content: "\f4f7";
 }
+.fa-rainbow:before {
+  content: "\f75b";
+}
 .fa-random:before {
   content: "\f074";
 }
@@ -3090,6 +3123,9 @@ template {
 }
 .fa-react:before {
   content: "\f41b";
+}
+.fa-reacteurope:before {
+  content: "\f75d";
 }
 .fa-readme:before {
   content: "\f4d5";
@@ -3135,6 +3171,9 @@ template {
 }
 .fa-replyd:before {
   content: "\f3e6";
+}
+.fa-republican:before {
+  content: "\f75e";
 }
 .fa-researchgate:before {
   content: "\f4f8";
@@ -3378,6 +3417,9 @@ template {
 }
 .fa-smile-wink:before {
   content: "\f4da";
+}
+.fa-smog:before {
+  content: "\f75f";
 }
 .fa-smoking:before {
   content: "\f48d";
@@ -3663,6 +3705,12 @@ template {
 }
 .fa-telegram-plane:before {
   content: "\f3fe";
+}
+.fa-temperature-high:before {
+  content: "\f769";
+}
+.fa-temperature-low:before {
+  content: "\f76b";
 }
 .fa-tencent-weibo:before {
   content: "\f1d5";
@@ -4054,6 +4102,9 @@ template {
 .fa-volume-up:before {
   content: "\f028";
 }
+.fa-vote-yea:before {
+  content: "\f772";
+}
 .fa-vr-cardboard:before {
   content: "\f729";
 }
@@ -4068,6 +4119,9 @@ template {
 }
 .fa-warehouse:before {
   content: "\f494";
+}
+.fa-water:before {
+  content: "\f773";
 }
 .fa-weebly:before {
   content: "\f5cc";
@@ -4227,7 +4281,7 @@ template {
   width: auto;
 }
 /*!
- * Font Awesome Free 5.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Free 5.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 @font-face {
@@ -4243,7 +4297,7 @@ template {
   font-weight: 900;
 }
 /*!
- * Font Awesome Free 5.4.2 by @fontawesome - https://fontawesome.com
+ * Font Awesome Free 5.5.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 @font-face {

@@ -99,7 +99,6 @@ class AddQuestionForm extends FormModel
      */
     public function callbackSubmit() : bool
     {
-        // $question = new Question();
         $this->question->setDb($this->di->get("dbqb"));
 
         date_default_timezone_set("Europe/Stockholm");
@@ -127,7 +126,7 @@ class AddQuestionForm extends FormModel
     public function callbackSuccess()
     {
         $this->di->get("response")->redirect("questions")->send();
-        return True;
+        return true;
     }
 
 
@@ -142,6 +141,4 @@ class AddQuestionForm extends FormModel
     {
         $this->di->get("response")->redirectSelf()->send();
     }
-
-
 }

@@ -21,7 +21,7 @@
             event.preventDefault();
             comments[event.target.parentElement.id].classList.toggle("hidden");
             event.target.src = event.target.src == expand ? collapse: expand;
+            comments[event.target.parentElement.id].querySelector("#form-element-text").focus();
         });
     }
-
 })();

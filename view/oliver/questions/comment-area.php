@@ -19,11 +19,12 @@ namespace Anax\View;
 </div>
 
 <div class="comments">
+
     <?= $form ?>
 
     <div class="replies">
-        <?php foreach ($item->comments as $comment): ?>
-            <div class="container-row">
+        <?php foreach ($item->comments as $comment) : ?>
+            <div class="container-row align-items-center" style="margin-left: 1rem;">
                 <?= $comment->creator->gravatar ?>
                 <div class="container-col user-area">
                     <a href=" <?=url("users/{$comment->creator->id}")?> "><?= $comment->creator->username ?></a>

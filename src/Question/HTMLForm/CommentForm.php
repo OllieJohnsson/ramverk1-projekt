@@ -104,6 +104,4 @@ class CommentForm extends FormModel
     // {
     //     $this->di->get("response")->redirectSelf()->send();
     // }
-
-
 }
