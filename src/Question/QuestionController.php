@@ -90,6 +90,7 @@ class QuestionController implements ContainerInjectableInterface
             "form" => $formHTML
         ]);
 
+        $commentAnswerForm = null;
         foreach ($question->answers as $answer) {
             $commentAnswerForm = new CommentForm($this->di, $answer->id, "answerComment");
             $formHTML = $this->di->get('session')->get('userId') ? $commentAnswerForm->getHTML() : null;
@@ -99,7 +100,7 @@ class QuestionController implements ContainerInjectableInterface
             ]);
         }
 
-        if (count($question->answers) > 0) {
+        if ($commentAnswerForm) {
             $commentAnswerForm->check();
         }
 

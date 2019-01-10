@@ -3,7 +3,7 @@
 namespace Oliver\User\HTMLForm;
 
 use Anax\HTMLForm\FormModel;
-use Psr\Container\ContainerInterface;
+use \Psr\Container\ContainerInterface;
 
 /**
  * Example of FormModel implementation.

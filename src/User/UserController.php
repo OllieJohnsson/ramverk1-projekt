@@ -9,13 +9,6 @@ use Oliver\User\HTMLForm\LoginUserForm;
 use Oliver\User\HTMLForm\RegisterUserForm;
 use Oliver\User\HTMLForm\EditUserForm;
 
-// use Oliver\Question\Question;
-// use Oliver\Question\Answer;
-// use Oliver\Question\Comment;
-
-// use Anax\Route\Exception\ForbiddenException;
-// use Anax\Route\Exception\NotFoundException;
-// use Anax\Route\Exception\InternalErrorException;
 
 /**
  * A sample controller to show how a controller class can be implemented.
@@ -24,17 +17,10 @@ class UserController implements ContainerInjectableInterface
 {
     use ContainerInjectableTrait;
 
-
-
-    /**
-     * @var $data description
-     */
-    //private $data;
     private $page;
     private $user;
     private $question;
     private $answer;
-
 
     /**
      * The initialize method is optional and will always be called before the
