@@ -1,6 +1,6 @@
 {
-    "name" : "anax/noname",
-    "description": "A me page for the ramverk1 course.",
+    "name" : "oliver/ramverk1-projekt",
+    "description": "Mitt projekt i kursen ramverk1",
     "license": "MIT",
     "minimum-stability": "beta",
     "prefer-stable": true,
@@ -12,6 +12,7 @@
         "files": ["src/function.php"]
     },
     "require": {
+        "php": ">=7.2",
         "anax/anax-ramverk1-me": "^1.0.0",
         "anax/database": "^2.2",
         "anax/database-query-builder": "^2.0",
