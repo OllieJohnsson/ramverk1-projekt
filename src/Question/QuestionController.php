@@ -51,6 +51,11 @@ class QuestionController implements ContainerInjectableInterface
                 "item" => $question
             ]);
         }
+
+
+        $this->page->add("oliver/header", [
+            "action" => $action
+        ]);
         return $this->page->render([
             "title" => $title
         ]);
@@ -103,6 +108,10 @@ class QuestionController implements ContainerInjectableInterface
 
         $this->page->add("oliver/questions/create-answer", [
             "form" => $answerForm->getHTML()
+        ]);
+
+        $this->page->add("oliver/header", [
+            "action" => $action
         ]);
 
         return $this->page->render([
@@ -163,7 +172,7 @@ class QuestionController implements ContainerInjectableInterface
 
     public function tags()
     {
-        $title = "Taggar";
+        $title = "Alla taggar";
 
         $this->page->add("oliver/header", [
             "title" => $title

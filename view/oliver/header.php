@@ -10,10 +10,10 @@ if (isset($action)) {
     $id = slugify($action["name"])."Button";
 };
 
-$actionButton = isset($action) ? '<div class="flex-right">'."<a id='${id}' href=".url($action['link']).">{$action['name']}</a></div>" : null;
+$actionButton = isset($action) ? '<div class="flex-right">'."<a class='${id}' id='${id}' href=".url($action['link']).">{$action['name']}</a></div>" : null;
 ?>
 
-<div class="container-col">
+<div class="container-col header">
     <?= $titleH1 ?>
     <div class="container-row">
         <?= $backButton ?>

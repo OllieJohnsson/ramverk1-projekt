@@ -84,17 +84,30 @@ class UserController implements ContainerInjectableInterface
     public function getUser(int $userId)
     {
         $user = $this->user->findUser($userId, 150);
-
         $questions = $this->question->findAllByUser($userId);
         $answers = $this->answer->findAllByUser($userId);
 
-        $action = $userId === $this->di->get('session')->get('userId') ? [
-            "link" => "users/edit",
-            "name" => '<img src="https://img.icons8.com/ios-glyphs/30/53d794/pencil.png">'
-        ] : null;
+        // $action = $userId === $this->di->get('session')->get('userId') ? [
+        //     "link" => "users/edit",
+        //     "name" => '<img src="https://img.icons8.com/ios-glyphs/30/53d794/pencil.png">'
+        // ] : null;
+
+        $action = null;
+        $h1Prefix = "{$user->username}s";
+        $h2Prefix = $h1Prefix;
+        $pPrefix = $user->username;
+        if ($userId === $this->di->get('session')->get('userId')) {
+            $action = [
+                "link" => "users/edit",
+                "name" => '<img src="https://img.icons8.com/ios-glyphs/30/53d794/pencil.png">'
+            ];
+            $h1Prefix = "Min";
+            $h2Prefix = "Mina";
+            $pPrefix = "Du";
+        }
 
         $this->page->add("oliver/header", [
-            "title" => "{$user->username}'s profil",
+            "title" => "{$h1Prefix} profil",
             "back" => [
                 "link" => "users",
                 "name" => "Alla användare"
@@ -105,7 +118,9 @@ class UserController implements ContainerInjectableInterface
         $this->page->add("oliver/users/userInfo", [
             "user" => $user,
             "questions" => $questions,
-            "answers" => $answers
+            "answers" => $answers,
+            "h2Prefix" => $h2Prefix,
+            "pPrefix" => $pPrefix
         ]);
 
 

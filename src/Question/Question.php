@@ -50,7 +50,7 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
         foreach ($questions as $question) {
             $question->title = $this->di->get("textfilter")->doFilter($question->title, "markdown");
             $question->creator = $this->di->get("user")->findUser($question->userId);
-            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 30);
+            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 35);
             $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
         }
         return $questions;
@@ -90,7 +90,7 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
 
         foreach ($questions as $question) {
             $question->creator = $this->di->get("user")->findUser($question->userId);
-            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 30);
+            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 35);
             $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
         }
         return $questions;
@@ -113,7 +113,10 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
                         ->limit($limit)
                         ->execute()
                         ->fetchAllClass(get_class($this));
-        return $questions;
 
+        foreach ($questions as $question) {
+            $question->creator = $this->di->get('user')->findUser($question->userId, 35);
+        }
+        return $questions;
     }
 }

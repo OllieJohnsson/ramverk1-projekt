@@ -33,13 +33,13 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
 
 
 
-        /**
-     * Set the password.
-     *
-     * @param string $password the password to use.
-     *
-     * @return void
-     */
+    /**
+    * Set the password.
+    *
+    * @param string $password the password to use.
+    *
+    * @return void
+    */
     public function setPassword($password)
     {
         $this->password = password_hash($password, PASSWORD_DEFAULT);
@@ -47,14 +47,14 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
 
 
     /**
-     * Verify the acronym and the password, if successful the object contains
-     * all details from the database row.
-     *
-     * @param string $acronym  acronym to check.
-     * @param string $password the password to use.
-     *
-     * @return boolean true if acronym and password matches, else false.
-     */
+    * Verify the acronym and the password, if successful the object contains
+    * all details from the database row.
+    *
+    * @param string $acronym  acronym to check.
+    * @param string $password the password to use.
+    *
+    * @return boolean true if acronym and password matches, else false.
+    */
     public function verifyPassword($username, $password)
     {
         $this->find("username", $username);
@@ -69,7 +69,7 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
         $default = "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"; // Set a Default Avatar
         $email = md5(strtolower(trim($email)));
         $gravurl = "http://www.gravatar.com/avatar/$email?d=$default&s=200&r=$rating";
-        return '<img style="width: '.$size.'px; height: '.$size.'px;" class="profile-image" src="'.$gravurl.'" width="{$size}" height="{$size}" border="0" alt="Avatar">';
+        return '<img style="width: ' . $size . 'px; height: ' . $size . 'px;" class="profile-image" src="' . $gravurl . '" width="{$size}" height="{$size}" border="0" alt="Avatar">';
     }
 
 
@@ -118,6 +118,10 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
                         ->limit($limit)
                         ->execute()
                         ->fetchAllClass(get_class($this));
+
+        foreach ($users as $user) {
+            $user->creator = $this->findUser($user->id, 35);
+        }
         return $users;
     }
 }

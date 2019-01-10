@@ -3,8 +3,7 @@ namespace Anax\View;
 
 ?>
 
-
-
-
-<a href="<?= url("questions/tag/$tag->id") ?>"><?= $tag->name ?></a>
-<p><?= $tag->amount ?></p>
+<div class="container-row popular-tag">
+    <a href="<?= url("questions/tag/$item->id") ?>">#<?= $item->name ?>&nbsp;&nbsp;</a>
+    <p class="smallGrayText"><?= $item->amount ?></p>
+</div>

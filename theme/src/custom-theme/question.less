@@ -7,22 +7,6 @@
         margin-right: 0;
     }
 
-    .user-area {
-        justify-content: center;
-        margin-left: 1rem;
-        margin-right: 1rem;
-        p {
-            .smallGrayText();
-        }
-        > * {
-            margin: 0;
-        }
-
-        .title {
-            margin-bottom: 0.2rem;
-        }
-    }
-
     .comment-area {
         width: unset;
     }
@@ -78,6 +62,10 @@
     margin-bottom: 1rem;
 }
 
+
+
+
+
 .replies {
     margin-top: 2rem;
     max-height: 20rem;
@@ -85,14 +73,35 @@
     overflow-x: auto;
 
     .text {
-        text-align: left;
-        justify-content: stretch;
+        justify-content: flex-start;
         margin-left: 1rem;
-        margin-top: 0.5rem;
-        margin-bottom: 1.5rem;
+    }
+
+    .comment-text:not(:last-child) {
+        border-bottom: 1px solid @superLightGrayColor;
+    }
+
+    .comment-text {
+        margin-bottom: 2rem;
         p {
-            margin-top: 0;
-            margin-right: 1rem;
+            margin-top: 0.5rem;
         }
+    }
+}
+
+
+
+.user-area {
+    .container-row();
+    align-items: center;
+    .title {
+        margin-bottom: 0.2rem;
+    }
+    .text {
+        > * {
+            margin: 0;
+        }
+        justify-content: flex-start;
+        margin-left: 0.5rem;
     }
 }

@@ -1,10 +1,6 @@
 <?php
 namespace Anax\View;
 
-// echo "<pre>";
-// var_dump($item->comments[0]->creator->gravatar);
-// var_dump($item->comments[0]->getUser()->username);
-// var_dump($item->comments[0]->user);
 ?>
 
 <div class="comment-area">
@@ -24,14 +20,14 @@ namespace Anax\View;
 
     <div class="replies">
         <?php foreach ($item->comments as $comment) : ?>
-            <div class="container-row align-items-center" style="margin-left: 1rem;">
+            <div class="user-area" style="margin-left: 1rem;">
                 <?= $comment->creator->gravatar ?>
-                <div class="container-col user-area">
+                <div class="container-col text">
                     <a href=" <?=url("users/{$comment->creator->id}")?> "><?= $comment->creator->username ?></a>
-                    <p class="smallText"> <?= $comment->posted ?></p>
+                    <p class="smallGrayText"> <?= $comment->posted ?></p>
                 </div>
             </div>
-            <div class="container-row text">
+            <div class="container-row text comment-text">
                 <?= $comment->text ?>
             </div>
         <?php endforeach; ?>

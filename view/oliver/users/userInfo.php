@@ -1,8 +1,6 @@
 <?php
 namespace Anax\View;
 
-
-
 ?>
 
 <div class="user-info">
@@ -26,9 +24,9 @@ namespace Anax\View;
     </table>
 
     <div class="container-col">
-        <h2>Mina frågor</h2>
+        <h2><?= $h2Prefix ?> frågor</h2>
         <?php if (count($questions) === 0) : ?>
-            <p><?= $user->username ?> har inte ställt några frågor än.</p>
+            <p><?= $pPrefix ?> har inte ställt några frågor än.</p>
         <?php endif; ?>
         <?php foreach ($questions as $question) : ?>
             <a href="<?= url("questions/{$question->id}"); ?>"><?= $question->title ?></a>
@@ -36,9 +34,9 @@ namespace Anax\View;
         <?php endforeach; ?>
     </div>
     <div class="container-col">
-        <h2>Mina svar</h2>
+        <h2><?= $h2Prefix ?> svar</h2>
         <?php if (count($answers) === 0) : ?>
-            <p><?= $user->username ?> har inte svarat på någon fråga än.</p>
+            <p><?= $pPrefix ?> har inte svarat på någon fråga än.</p>
         <?php endif; ?>
         <?php foreach ($answers as $answer) : ?>
             <a href="<?= url("questions/{$answer->questionId}"); ?>"><?= $answer->text ?></a>

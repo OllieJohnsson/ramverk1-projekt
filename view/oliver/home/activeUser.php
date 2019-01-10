@@ -2,11 +2,30 @@
 namespace Anax\View;
 
 ?>
+<div class="container-col list-item">
+    <div class="container-row">
 
+    </div>
+    <div class="container-row gravatar-username">
+        <?= $item->creator->gravatar ?>
+        <a href="<?= url("users/$item->id") ?>"><?= $item->username ?></a>
+    </div>
+    <div class="container-row active-icons">
 
+            <img src="https://img.icons8.com/ios-glyphs/25/D8DDE6/ask-question.png">
+            <div class="count">
+                <?= $item->questions ?>
+            </div>
 
+            <img src="https://img.icons8.com/ios-glyphs/25/D8DDE6/response.png">
+            <div class="count">
+                <?= $item->answers ?>
+            </div>
 
-<a href="<?= url("users/$user->id") ?>"><?= $user->username ?></a>
-<p>Frågor: <?= $user->questions ?></p>
-<p>Svar: <?= $user->answers ?></p>
-<p>Kommentarer: <?= $user->questionComments + $user->answerComments ?></p>
+            <img src="https://img.icons8.com/ios-glyphs/25/D8DDE6/speech-bubble-with-dots.png">
+            <div class="count">
+                <?= $item->questionComments + $item->answerComments ?>
+            </div>
+
+    </div>
+</div>

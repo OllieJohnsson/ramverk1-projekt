@@ -3,8 +3,7 @@ namespace Anax\View;
 
 ?>
 
-
-
-
-<a href="<?= url("questions/$question->id") ?>"><?= $question->title ?></a>
-<p class="smallGrayText date"><?= $question->posted ?></p>
+<div class="container-col list-item">
+    <?php include __DIR__.'/../questions/user-area.php'; ?>
+    <a class="title" href="<?= url("questions/{$item->id}") ?>"><?= $item->title ?></a>
+</div>

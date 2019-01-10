@@ -1,21 +1,24 @@
 (function() {
-    let answerButton = document.getElementById('svaraButton');
+    let answerButtons = document.getElementsByClassName('svaraButton');
     let answerForm = document.getElementById('answerQuestionForm');
 
 
-    if (!answerButton || !answerForm) {
+    if (!answerButtons || !answerForm) {
         return;
     }
 
     answerForm.hidden = true;
 
-    answerButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        console.log("SVARA!!");
-        answerForm.hidden = false;
-        answerForm.querySelector("#form-element-text").focus();
-        window.scrollTo(0, document.body.scrollHeight);
-    });
+    for (var i = 0; i < answerButtons.length; i++) {
+        answerButtons[i].addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log("SVARA!!");
+            answerForm.hidden = false;
+            answerForm.querySelector("#form-element-text").focus();
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    }
+
 
     let cancelButton = document.getElementById('form-element-button');
 
