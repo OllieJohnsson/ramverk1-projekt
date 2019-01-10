@@ -3,7 +3,7 @@
 namespace Oliver\Question\HTMLForm;
 
 use Anax\HTMLForm\FormModel;
-use Psr\Container\ContainerInterface;
+use \Psr\Container\ContainerInterface;
 
 use Oliver\Question\Question;
 use Oliver\Question\Tag;
@@ -73,7 +73,7 @@ class AddQuestionForm extends FormModel
             $questionTag = new QuestionTag();
             $questionTag->setDb($this->di->get("dbqb"));
 
-            $lastTagId;
+            $lastTagId = 0;
             try {
                 $tag->name = $tagName;
                 $tag->save();
