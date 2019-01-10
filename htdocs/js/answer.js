@@ -12,7 +12,6 @@
     for (var i = 0; i < answerButtons.length; i++) {
         answerButtons[i].addEventListener('click', function(event) {
             event.preventDefault();
-            console.log("SVARA!!");
             answerForm.hidden = false;
             answerForm.querySelector("#form-element-text").focus();
             window.scrollTo(0, document.body.scrollHeight);
