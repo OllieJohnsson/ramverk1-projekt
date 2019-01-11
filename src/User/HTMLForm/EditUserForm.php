@@ -40,6 +40,7 @@ class EditUserForm extends FormModel
                     "value" => $this->user->username,
                     "placeholder" => "Användarnamn",
                     "validation" => ["not_empty"],
+                    "autofocus" => true
                 ],
                 "e-post" => [
                     "type"        => "email",

@@ -16,12 +16,78 @@
     height: auto;
     background-color: @navbarColor;
 }
+
 .inner-wrap-header {
     display: flex;
     align-items: center;
 
     height: 4rem;
     color: rgba(255, 255, 255, 0.8);
+
+    .row {
+        height: 100%;
+        .region-header {
+            align-items: stretch;
+            height: 100%;
+            .region-header-col-1 {
+                display: flex;
+                align-items: center;
+            }
+            .region-header-col-2 {
+                display: flex;
+                justify-content: center;
+                ul.my-navbar {
+                    display: flex;
+                    align-items: stretch;
+                    height: 100%;
+                    .selected {
+                        a {
+                            border-bottom: solid 3px white;
+                        }
+                    }
+                    .selected-parent {
+                        a {
+                            border: none;
+                            .profile-image {
+                                border: solid 3px white;
+                            }
+                        }
+                    }
+                    li {
+                        display: flex;
+                        align-items: center;
+                        a:hover {
+                            border-bottom: solid 3px rgba(255, 255, 255, 0.5);
+                        }
+                        ul {
+                            background-color: black;
+                            border-radius: 0 0 0.5rem 0.5rem;
+                            .shadow();
+                            font-size: 1rem;
+                            top: 4rem;
+                            li {
+                                box-shadow: none;
+                                padding: 0.5rem 0;
+                                // border: none !important;
+                                a {
+                                    width: 100%;
+                                    text-align: left;
+                                    // border: none !important;
+                                }
+                            }
+                            :hover {
+                                background-color: lighten(black, 20);
+                                border: none;
+                            }
+                            :last-child {
+                                border-radius: 0 0 0.5rem 0.5rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -39,12 +105,13 @@
 }
 
 
-.rm-desktop li ul {
-    background-color: black;
-    border-radius: 0.3rem;
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
-    font-size: 1rem;
-}
+// .rm-desktop li ul {
+//     background-color: black;
+//     border-radius: 0 0 0.3rem 0.3rem;
+//     box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+//     font-size: 1rem;
+//     top: 4rem;
+// }
 
 .rm-navbar-max {
     font-size: 1rem;
@@ -81,8 +148,8 @@ a.rm-button.rm-clicked .rm-button-face-2 {
 }
 
 
-ul.my-navbar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+// ul.my-navbar {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }

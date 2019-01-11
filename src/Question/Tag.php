@@ -62,5 +62,4 @@ class Tag extends ActiveRecordModel
                         ->fetchAllClass(get_class($this));
         return $tags;
     }
-
 }

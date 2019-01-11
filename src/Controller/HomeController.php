@@ -4,7 +4,6 @@ namespace Oliver\Controller;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
-
 /**
  *
  */
@@ -76,5 +75,4 @@ class HomeController implements ContainerInjectableInterface
             "title" => $title
         ]);
     }
-
 }

@@ -37,6 +37,7 @@ CREATE TABLE `answer` (
     `posted` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `questionId` INT,
     `userId` INT,
+    `accepted` BOOL DEFAULT 0
 
 	PRIMARY KEY (id),
     FOREIGN KEY (questionId) REFERENCES `question`(id),

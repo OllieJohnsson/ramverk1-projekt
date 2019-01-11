@@ -28,6 +28,7 @@ class RegisterUserForm extends FormModel
                     "type"        => "text",
                     "validation" => ["not_empty"],
                     "placeholder" => "Användarnamn",
+                    "autofocus" => true
                 ],
                 "email" => [
                     "type"        => "email",

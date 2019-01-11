@@ -27,6 +27,7 @@ class LoginUserForm extends FormModel
                 "username" => [
                     "type"        => "text",
                     "placeholder" => "Användarnamn",
+                    "autofocus" => true
                 ],
 
                 "password" => [

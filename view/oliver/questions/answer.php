@@ -1,6 +1,6 @@
 
 <div class="question">
     <?php include 'user-area.php'; ?>
-    <p><?= $item->text ?></p>
+    <?= $item->text ?>
     <?php include 'comment-area.php'; ?>
 </div>

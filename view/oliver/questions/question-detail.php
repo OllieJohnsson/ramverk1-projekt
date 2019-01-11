@@ -15,7 +15,7 @@ $tagText = count($item->tags) > 0 ? "taggar:" : null;
         <?php endforeach; ?>
     </p>
 
-    <p class="questionText"><?= $item->text ?></p>
+    <?= $item->text ?>
 
     <?php include 'comment-area.php'; ?>
 </div>

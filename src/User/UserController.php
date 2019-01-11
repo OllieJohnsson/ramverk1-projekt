@@ -9,7 +9,6 @@ use Oliver\User\HTMLForm\LoginUserForm;
 use Oliver\User\HTMLForm\RegisterUserForm;
 use Oliver\User\HTMLForm\EditUserForm;
 
-
 /**
  * A sample controller to show how a controller class can be implemented.
  */
@@ -72,11 +71,6 @@ class UserController implements ContainerInjectableInterface
         $user = $this->user->findUser($userId, 150);
         $questions = $this->question->findAllByUser($userId);
         $answers = $this->answer->findAllByUser($userId);
-
-        // $action = $userId === $this->di->get('session')->get('userId') ? [
-        //     "link" => "users/edit",
-        //     "name" => '<img src="https://img.icons8.com/ios-glyphs/30/53d794/pencil.png">'
-        // ] : null;
 
         $action = null;
         $h1Prefix = "{$user->username}s";
@@ -169,7 +163,7 @@ class UserController implements ContainerInjectableInterface
         $userId = $this->di->get('session')->get('userId');
 
         $this->page->add("oliver/header", [
-            "title" => "Redigera",
+            "title" => "Redigera din profil",
             "back" => [
                 "link" => "users/{$userId}",
                 "name" => "Profil"

@@ -39,7 +39,7 @@ class Navbar
      */
     public function check($url)
     {
-        if ($url == $this->di->get("request")->getCurrentUrl(false)) {
+        if ($url == $this->di->get("request")->getRoute()) {
             return true;
         }
     }
@@ -138,6 +138,7 @@ class Navbar
                 if (!isset($item["url"])) {
                     // var_dump($item);
                 }
+
                 $selected = $this->check($item["url"])
                     ? "selected "
                     : null;
