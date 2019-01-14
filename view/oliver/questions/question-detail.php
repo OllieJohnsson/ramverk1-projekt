@@ -7,7 +7,7 @@ $tagText = count($item->tags) > 0 ? "taggar:" : null;
 <div class="question">
     <?php include 'user-area.php'; ?>
 
-    <h1 class="largeText"><?= $item->title ?></h1>
+    <p class="largeText"><?= $item->title ?></p>
     <p class="smallText tags-area">
         <?= $tagText ?>
         <?php foreach ($item->tags as $tag) : ?>

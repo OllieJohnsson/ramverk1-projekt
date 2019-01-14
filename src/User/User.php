@@ -6,12 +6,15 @@ use Anax\DatabaseActiveRecord\ActiveRecordModel;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
 
+use \Oliver\GravatarTrait;
+
 /**
  * A database driven model using the Active Record design pattern.
  */
 class User extends ActiveRecordModel implements ContainerInjectableInterface
 {
     use ContainerInjectableTrait;
+    use GravatarTrait;
     /**
      * @var string $tableName name of the database table.
      */
@@ -63,17 +66,7 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
 
 
 
-    public function gravatar(string $email, int $size = 60) : string
-    {
-        $rating = 'pg';
-        $default = "https://www.timeshighereducation.com/sites/default/files/byline_photos/default-avatar.png"; // Set a Default Avatar
-        $email = md5(strtolower(trim($email)));
-        $gravurl = "http://www.gravatar.com/avatar/$email?d=$default&s=200&r=$rating";
-        return '<img style="width: ' . $size . 'px; height: ' . $size . 'px;" class="profile-image" src="' . $gravurl . '" width="{$size}" height="{$size}" border="0" alt="Avatar">';
-    }
-
-
-    public function findAllOrderByUsername(int $imageSize)
+    public function findAllOrderByUsername()
     {
         $this->checkDb();
         $users = $this->db->connect()
@@ -82,19 +75,13 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
                         ->orderby("username")
                         ->execute()
                         ->fetchAllClass(get_class($this));
-
-        foreach ($users as $user) {
-            $user->gravatar = $this->gravatar($user->email, $imageSize);
-        }
         return $users;
     }
 
 
-    public function findUser(int $id, int $imageSize = 60) : object
+    public function findUser(int $id) : object
     {
-        $user = $this->findAllWhere("id = ?", $id)[0];
-        $user->gravatar = $this->gravatar($user->email, $imageSize);
-        return $user;
+        return $this->findById($id);
     }
 
 
@@ -106,22 +93,26 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
 
     public function findMostActiveUsers(int $limit) : array
     {
-        $this->checkDb();
-        $users = $this->db->connect()
-                        ->select("user.*, q.questions, a.answers, qc.questionComments, ac.answerComments")
-                        ->from($this->tableName)
-                        ->join("numberOfQuestions AS q", "q.userId = user.id")
-                        ->join("numberOfAnswers AS a", "a.userId = user.id")
-                        ->join("numberOfQuestionComments AS qc", "qc.userId = user.id")
-                        ->join("numberOfAnswerComments AS ac", "ac.userId = user.id")
-                        ->orderby("(q.questions + a.answers + qc.questionComments + ac.answerComments) desc")
-                        ->limit($limit)
-                        ->execute()
-                        ->fetchAllClass(get_class($this));
+        $users = $this->findAll();
+
+        $questionComments = $this->di->get('comment');
+        $questionComments->setTableName("questionComment");
+
+        $answerComments = $this->di->get('comment');
+        $answerComments->setTableName("answerComment");
 
         foreach ($users as $user) {
-            $user->creator = $this->findUser($user->id, 35);
+            $user->noQuestions = $this->di->get('question')->countForUser($user->id);
+            $user->noAnswers = $this->di->get('answer')->countForUser($user->id);
+            $user->noComments = $questionComments->countForUser($user->id) + $answerComments->countForUser($user->id);
         }
-        return $users;
+
+        usort($users, function ($first, $second) {
+            $sumFirst = $first->noQuestions + $first->noAnswers + $first->noComments;
+            $sumSecond = $second->noQuestions + $second->noAnswers + $second->noComments;
+            return $sumSecond <=> $sumFirst;
+        });
+
+        return array_slice($users, 0, $limit);
     }
 }

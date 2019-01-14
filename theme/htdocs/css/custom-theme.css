@@ -496,6 +496,22 @@ th {
 .question h1 p {
   margin: 0;
 }
+.question .acceptButton {
+  position: absolute;
+  align-self: flex-end;
+  margin: 0;
+}
+.question .acceptButton input {
+  margin: 0;
+  padding: 0 0.5rem;
+  background-color: #53d794;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.question .acceptButton input:hover {
+  background-color: #259f61;
+}
 .commentButton {
   background-color: unset;
   border: none;
@@ -556,6 +572,10 @@ th {
 }
 .user-area .text > * {
   margin: 0;
+}
+.accepted {
+  display: flex;
+  align-self: flex-end;
 }
 .container-row {
   display: flex;

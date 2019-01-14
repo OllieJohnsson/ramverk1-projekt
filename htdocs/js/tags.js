@@ -15,7 +15,11 @@
     let tags = [];
 
     button.addEventListener('click', function() {
-        if (tag.value === "") {
+        let lowerTags = tags.map(tag => {
+            return tag.toLowerCase();
+        });
+
+        if (tag.value === "" || lowerTags.includes(tag.value.toLowerCase())) {
             return;
         }
         if (!document.getElementById('tagsArea')) {
@@ -23,6 +27,7 @@
         }
         tags.push(tag.value);
         tag.value = "";
+        tag.focus();
 
         tagsArea.innerHTML = null;
         tags.forEach(tag => {

@@ -2,7 +2,6 @@
     let answerButtons = document.getElementsByClassName('svaraButton');
     let answerForm = document.getElementById('answerQuestionForm');
 
-
     if (!answerButtons || !answerForm) {
         return;
     }

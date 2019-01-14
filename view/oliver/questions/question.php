@@ -1,18 +1,17 @@
 <?php
 namespace Anax\View;
 
-$title = $item->latestAnswer ? "Senaste" : null;
-$latestUserName = $item->latestAnswer ? $item->latestAnswer[0]->creator->username : null;
-$latestUserId = $item->latestAnswer ? $item->latestAnswer[0]->creator->id : null;
-$latestPosted = $item->latestAnswer ? $item->latestAnswer[0]->posted : null;
-$latestGravatar = $item->latestAnswer ? $item->latestAnswer[0]->creator->gravatar : null;
+$title = isset($latestAnswer) ? "Senaste" : null;
+$latestAnswerUserId = isset($latestAnswer) ? $latestAnswer->creator->id : null;
+$latestAnswerUserName = isset($latestAnswer) ? $latestAnswer->creator->username : null;
+$latestAnswerUserGravatar = isset($latestAnswer) ? $latestAnswer->creator->gravatar($latestAnswer->creator->email, 35) : null;
+$latestAnswerPosted = isset($latestAnswer) ? $latestAnswer->posted : null;
 ?>
 
 <div class="question">
     <div class="container-row">
         <?php include 'user-area.php'; ?>
         <div class="container-col user-area" style="text-align: right; align-items: flex-end;">
-
 
             <div class="container-row" style="justify-content: flex-end; align-items: center;">
                 <div class="count" style="margin-right: 0.2rem; margin-bottom: 0.2rem;"><?= $item->numberOfAnswers ?></div>
@@ -22,10 +21,10 @@ $latestGravatar = $item->latestAnswer ? $item->latestAnswer[0]->creator->gravata
             <p class="smallGrayText title"><?= $title ?></p>
             <div class="container-row align-items-center">
                 <div class="container-col" style="margin-right: 0.5rem;">
-                    <a href="<?= url("users/$latestUserId") ?>" class="smallText"><?= $latestUserName ?></a>
-                    <p class="smallGrayText" style="margin: 0;"><?= $latestPosted ?></p>
+                    <a href="<?= url("users/$latestAnswerUserId") ?>" class="smallText"><?= $latestAnswerUserName ?></a>
+                    <p class="smallGrayText" style="margin: 0;"><?= $latestAnswerPosted ?></p>
                 </div>
-                <?= $latestGravatar ?>
+                <?= $latestAnswerUserGravatar ?>
             </div>
         </div>
     </div>

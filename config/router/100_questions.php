@@ -35,5 +35,11 @@ return [
             "path" => "tags",
             "handler" => ["\Oliver\Question\QuestionController", "tags"],
         ],
+        [
+            "info" => "Acceptera svar",
+            "method" => "post",
+            "path" => "{questionId:digit}/{answerId:digit}",
+            "handler" => ["\Oliver\Question\QuestionController", "acceptAnswer"],
+        ],
     ]
 ];

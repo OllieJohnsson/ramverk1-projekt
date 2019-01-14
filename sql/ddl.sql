@@ -37,12 +37,16 @@ CREATE TABLE `answer` (
     `posted` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `questionId` INT,
     `userId` INT,
-    `accepted` BOOL DEFAULT 0
+    `accepted` BOOL DEFAULT NULL,
 
 	PRIMARY KEY (id),
     FOREIGN KEY (questionId) REFERENCES `question`(id),
-	FOREIGN KEY (userId) REFERENCES `user`(id)
+	FOREIGN KEY (userId) REFERENCES `user`(id),
+    UNIQUE KEY `unique_accepted` (`questionId`,`accepted`)
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
+
+
+-- ALTER TABLE `answer` ADD UNIQUE `unique_index`(`questionId`, `accepted`);
 
 
 CREATE TABLE `tag` (
@@ -96,53 +100,77 @@ CREATE TABLE questionTag (
 
 
 -- VIEWS
-DROP VIEW IF EXISTS numberOfQuestions;
-CREATE VIEW numberOfQuestions AS
-    SELECT
-        user.id AS userId,
-        COALESCE(COUNT(question.id), 0) AS questions
+
+DROP VIEW IF EXISTS userActivity;
+CREATE VIEW userActivity AS
+SELECT
+    u.id,
+    u.username,
+    u.email,
+    q.numberOfQuestions,
+    a.numberOfAnswers,
+    qc.numberOfQuestionComments,
+    ac.numberOfAnswerComments
+FROM
+    user AS u
+        LEFT JOIN
+    (SELECT
+        userId, COUNT(*) AS numberOfQuestions
     FROM
-        user
-            LEFT JOIN
-        question ON question.userId = user.id
-    GROUP BY user.id
+        question
+    GROUP BY userId) AS q ON u.id = q.userId
+        LEFT JOIN
+    (SELECT
+        userId, COUNT(*) AS numberOfAnswers
+    FROM
+        answer
+    GROUP BY userId) AS a ON u.id = a.userId
+        LEFT JOIN
+    (SELECT
+        userId, COUNT(*) AS numberOfQuestionComments
+    FROM
+        questionComment
+    GROUP BY userId) AS qc ON u.id = qc.userId
+        LEFT JOIN
+    (SELECT
+        userId, COUNT(*) AS numberOfAnswerComments
+    FROM
+        answerComment
+    GROUP BY userId) AS ac ON u.id = ac.userId
 ;
 
 
-DROP VIEW IF EXISTS numberOfAnswers;
-CREATE VIEW numberOfAnswers AS
-    SELECT
-        user.id AS userId,
-        COALESCE(COUNT(answer.id), 0) AS answers
-    FROM
-        user
-            LEFT JOIN
-        answer ON answer.userId = user.id
-    GROUP BY user.id
-;
-
-
-DROP VIEW IF EXISTS numberOfQuestionComments;
-CREATE VIEW numberOfQuestionComments AS
-    SELECT
-        user.id AS userId,
-        COALESCE(COUNT(questionComment.id), 0) AS questionComments
-    FROM
-        user
-            LEFT JOIN
-        questionComment ON questionComment.userId = user.id
-    GROUP BY user.id
-;
-
-
-DROP VIEW IF EXISTS numberOfAnswerComments;
-CREATE VIEW numberOfAnswerComments AS
-    SELECT
-        user.id AS userId,
-        COALESCE(COUNT(answerComment.id), 0) AS answerComments
-    FROM
-        user
-            LEFT JOIN
-        answerComment ON answerComment.userId = user.id
-    GROUP BY user.id
-;
+-- DROP VIEW IF EXISTS activeUsers;
+-- CREATE VIEW activeUsers AS
+--     SELECT
+--         user.*,
+--         (SELECT
+--                 COUNT(*)
+--             FROM
+--                 question
+--             WHERE
+--                 question.userId = user.id) AS questions,
+--         (SELECT
+--                 COUNT(*)
+--             FROM
+--                 answer
+--             WHERE
+--                 answer.userId = user.id) AS answers,
+--         (SELECT
+--                 COUNT(*)
+--             FROM
+--                 questionComment
+--             WHERE
+--                 questionComment.userId = user.id) AS questionComments,
+--         (SELECT
+--                 COUNT(*)
+--             FROM
+--                 answerComment
+--             WHERE
+--                 answerComment.userId = user.id) AS answerComments
+--     FROM
+--         user
+--             INNER JOIN
+--         question AS q ON q.userId = user.id
+--     GROUP BY user.id
+-- ;

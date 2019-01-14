@@ -5,7 +5,7 @@ namespace Anax\View;
 
 <div class="userList-item">
     <div class="container-row">
-        <?= $user->gravatar; ?>
+        <?= $user->gravatar($user->email); ?>
         <a class="largeText" href="<?= url("users/{$user->id}") ?>"><?= $user->username ?></a>
     </div>
     <div class="container-col">

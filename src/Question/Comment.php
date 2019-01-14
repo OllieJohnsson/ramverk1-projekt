@@ -53,4 +53,9 @@ class Comment extends ActiveRecordModel implements ContainerInjectableInterface
     {
         return $this->findAllWhere("userId = ?", $userId);
     }
+
+    public function countForUser(int $userId)
+    {
+        return count($this->findAllWhere("userId = ?", $userId));
+    }
 }

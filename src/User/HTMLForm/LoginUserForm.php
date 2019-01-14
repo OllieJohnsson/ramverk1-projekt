@@ -61,7 +61,7 @@ class LoginUserForm extends FormModel
 
         if (!$res) {
             $this->form->rememberValues();
-            $this->form->addOutput("User or password did not match.");
+            $this->form->addOutput("Fel användarnamn eller lösenord.");
             return false;
         }
 

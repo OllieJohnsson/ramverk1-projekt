@@ -12,6 +12,9 @@ use Anax\Commons\ContainerInjectableTrait;
 class Answer extends ActiveRecordModel implements ContainerInjectableInterface
 {
     use ContainerInjectableTrait;
+    use \Oliver\GravatarTrait;
+    use \Oliver\MarkdownTrait;
+
     /**
      * @var string $tableName name of the database table.
      */
@@ -27,30 +30,48 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
     public $posted;
     public $questionId;
     public $userId;
+    public $accepted;
 
 
-    public function findAnswers(int $questionId, int $limit = 0, int $gravatarSize = 60) : array
+    public function findAnswers(int $questionId) : array
     {
-        $answers = $this->findAllWhere("questionId = ?", $questionId);
-
-        if (count($answers) === 0) {
-            return [];
-        }
+        $this->checkDb();
+        $answers = $this->db->connect()
+                        ->select()
+                        ->from($this->tableName)
+                        ->where("questionId = $questionId")
+                        ->orderby("posted desc")
+                        ->execute()
+                        ->fetchAllClass(get_class($this));
 
         foreach ($answers as $answer) {
-            $answer->text = $this->di->get("textfilter")->doFilter($answer->text, "markdown");
-            $answer->creator = $this->di->get("user")->findUser($answer->userId, $gravatarSize);
+            $answer->text = $this->markdown($answer->text);
+            $answer->creator = $this->di->get("user")->findUser($answer->userId);
             $answer->comments = $this->di->get("comment")->findComments("answerComment", $answer->id);
-        }
-
-        if ($limit === 1) {
-            return array_slice($answers, -$limit);
-        }
-        if ($limit > 0) {
-            return array_slice($answers, -$limit);
         }
         return $answers;
     }
+
+
+    public function findLatest($questionId)
+    {
+        $this->checkDb();
+        $answer = $this->db->connect()
+                        ->select()
+                        ->from($this->tableName)
+                        ->where("questionId = $questionId")
+                        ->orderby("posted desc")
+                        ->limit(1)
+                        ->execute()
+                        ->fetchClass(get_class($this));
+        if (!$answer) {
+            return null;
+        }
+        $answer->creator = $this->di->get('user')->findUser($answer->userId);
+        return $answer;
+    }
+
+
 
 
     public function countAnswers(int $questionId)
@@ -62,5 +83,18 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
     public function findAllByUser($userId)
     {
         return $this->findAllWhere("userId = ?", $userId);
+    }
+
+
+    public function acceptAnswer($answerId)
+    {
+        $answer = $this->findById($answerId);
+        $answer->accepted = true;
+        $answer->save();
+    }
+
+    public function countForUser(int $userId)
+    {
+        return count($this->findAllWhere("userId = ?", $userId));
     }
 }

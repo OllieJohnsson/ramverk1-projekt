@@ -3,9 +3,8 @@ namespace Anax\View;
 
 ?>
 
-<!-- <div class="container-row align-items-center"> -->
 <div class="user-area">
-    <?= $item->creator->gravatar ?>
+    <?= $item->gravatar($item->creator->email, 40) ?>
     <div class="container-col text">
         <a href=" <?=url("users/{$item->creator->id}")?> "><?= $item->creator->username ?></a>
         <p class="smallGrayText"> <?= $item->posted ?></p>

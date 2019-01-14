@@ -47,11 +47,13 @@ class QuestionController implements ContainerInjectableInterface
 
         $questions = $this->question->findAllOrderByPosted();
         foreach ($questions as $question) {
+            $latestAnswer = $this->answer->findLatest($question->id);
+
             $this->page->add("oliver/questions/question", [
-                "item" => $question
+                "item" => $question,
+                "latestAnswer" => $latestAnswer
             ]);
         }
-
 
         $this->page->add("oliver/header", [
             "action" => $action
@@ -90,13 +92,16 @@ class QuestionController implements ContainerInjectableInterface
             "form" => $formHTML
         ]);
 
+        $showAcceptButton = !$this->question->isAccepted() && $question->userId == $this->di->get('session')->get('userId');
         $commentAnswerForm = null;
+
         foreach ($question->answers as $answer) {
             $commentAnswerForm = new CommentForm($this->di, $answer->id, "answerComment");
             $formHTML = $this->di->get('session')->get('userId') ? $commentAnswerForm->getHTML() : null;
             $this->page->add("oliver/questions/answer", [
                 "item" => $answer,
-                "form" => $formHTML
+                "form" => $formHTML,
+                "showAcceptButton" => $showAcceptButton
             ]);
         }
 
@@ -185,5 +190,12 @@ class QuestionController implements ContainerInjectableInterface
         return $this->page->render([
             "title" => $title
         ]);
+    }
+
+
+    public function acceptAnswer($questionId, $answerId)
+    {
+        $this->answer->acceptAnswer($answerId);
+        $this->di->get("response")->redirect("questions/${questionId}");
     }
 }

@@ -21,7 +21,7 @@ namespace Anax\View;
     <div class="replies">
         <?php foreach ($item->comments as $comment) : ?>
             <div class="user-area" style="margin-left: 1rem;">
-                <?= $comment->creator->gravatar ?>
+                <?= $comment->creator->gravatar($comment->creator->email, 30) ?>
                 <div class="container-col text">
                     <a href=" <?=url("users/{$comment->creator->id}")?> "><?= $comment->creator->username ?></a>
                     <p class="smallGrayText"> <?= $comment->posted ?></p>

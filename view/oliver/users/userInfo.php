@@ -5,7 +5,7 @@ namespace Anax\View;
 
 <div class="user-info">
     <div class="flex-center">
-        <?= $user->gravatar; ?>
+        <?= $user->gravatar($user->email, 150); ?>
     </div>
 
     <table>

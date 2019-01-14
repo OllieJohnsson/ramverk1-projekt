@@ -12,6 +12,8 @@ use Anax\Commons\ContainerInjectableTrait;
 class Question extends ActiveRecordModel implements ContainerInjectableInterface
 {
     use ContainerInjectableTrait;
+    use \Oliver\GravatarTrait;
+    use \Oliver\MarkdownTrait;
     /**
      * @var string $tableName name of the database table.
      */
@@ -48,9 +50,8 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
                         ->fetchAllClass(get_class($this));
 
         foreach ($questions as $question) {
-            $question->title = $this->di->get("textfilter")->doFilter($question->title, "markdown");
             $question->creator = $this->di->get("user")->findUser($question->userId);
-            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 35);
+            $question->text = $this->markdown($question->text);
             $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
         }
         return $questions;
@@ -61,8 +62,7 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
     public function findQuestion($questionId)
     {
         $question = $this->findById($questionId);
-        $question->title = $this->di->get("textfilter")->doFilter($question->title, "markdown");
-        $question->text = $this->di->get("textfilter")->doFilter($question->text, "markdown");
+        $question->text = $this->markdown($question->text);
         $question->creator = $this->di->get("user")->findUser($question->userId);
         $question->tags = $this->di->get("tag")->findTagsForQuestion($questionId);
         $question->comments = $this->di->get("comment")->findComments("questionComment", $questionId);
@@ -118,5 +118,22 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
             $question->creator = $this->di->get('user')->findUser($question->userId, 35);
         }
         return $questions;
+    }
+
+
+    public function countForUser(int $userId)
+    {
+        return count($this->findAllWhere("userId = ?", $userId));
+    }
+
+    public function isAccepted()
+    {
+        $answers = $this->di->get('answer')->findAnswers($this->id);
+        foreach ($answers as $answer) {
+            if ($answer->accepted) {
+                return true;
+            }
+        }
+        return false;
     }
 }

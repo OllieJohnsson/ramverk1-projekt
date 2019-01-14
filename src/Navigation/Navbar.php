@@ -112,7 +112,8 @@ class Navbar
                 if ($userId && $item["text"] === "currentUser") {
                     $user = new User();
                     $user->setDb($this->di->get("dbqb"));
-                    $item["text"] = $user->findUser($userId, 40)->gravatar;
+                    $user = $user->findUser($userId);
+                    $item["text"] = $user->gravatar($user->email, 40);
                     $item["url"] = "users/{$userId}";
                 }
 

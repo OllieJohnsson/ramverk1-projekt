@@ -33,6 +33,7 @@ class AddQuestionForm extends FormModel
                     "type" => "text",
                     "placeholder" => "Titel",
                     "validation" => ["not_empty"],
+                    "autofocus" => true
                 ],
                 "text" => [
                     "type"        => "textarea",
