@@ -124,6 +124,9 @@ h2 {
   font-size: 0.8rem;
   color: #D3D8E1;
 }
+.grayText {
+  color: #D3D8E1;
+}
 .date {
   margin-top: 0;
 }
@@ -572,6 +575,35 @@ th {
 }
 .user-area .text > * {
   margin: 0;
+}
+.rank-area {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  width: unset;
+  margin: 0 2rem;
+}
+.rank-area form {
+  margin: 0;
+}
+.rank-area form fieldset {
+  box-shadow: none;
+  padding: 0;
+  align-items: flex-end;
+}
+.rank-area form fieldset .buttonbar {
+  margin: 0;
+}
+.rank-area form fieldset .buttonbar span #form-element-submit {
+  margin: 0;
+  padding: 0;
+  background-color: unset;
+  color: #53d794;
+}
+.rank-area p {
+  margin: 0 1rem;
 }
 .accepted {
   display: flex;

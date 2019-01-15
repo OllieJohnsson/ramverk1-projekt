@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `answerRank`;
+DROP TABLE IF EXISTS `questionRank`;
 DROP TABLE IF EXISTS `questionTag`;
 DROP TABLE IF EXISTS `questionComment`;
 DROP TABLE IF EXISTS `answerComment`;
@@ -25,6 +27,7 @@ CREATE TABLE `question` (
     `text` TEXT NOT NULL,
     `posted` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `userId` INT,
+    `rank` INT DEFAULT 0,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (userId) REFERENCES `user`(id)
@@ -82,6 +85,24 @@ CREATE TABLE `answerComment` (
 	FOREIGN KEY (userId) REFERENCES `user`(id)
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
 
+
+create table `questionRank` (
+	`targetId` INT NOT NULL,
+    `userId` INT NOT NULL,
+	`rankScore` INT NOT NULL,
+	PRIMARY KEY (targetId, userId),
+	FOREIGN KEY (targetId) REFERENCES `question`(id),
+	FOREIGN KEY (userId) REFERENCES `user`(id)
+) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
+
+create table `answerRank` (
+	`targetId` INT NOT NULL,
+    `userId` INT NOT NULL,
+	`rankScore` INT NOT NULL,
+	PRIMARY KEY (targetId, userId),
+	FOREIGN KEY (targetId) REFERENCES `answer`(id),
+	FOREIGN KEY (userId) REFERENCES `user`(id)
+) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
 
 
 

@@ -41,5 +41,11 @@ return [
             "path" => "{questionId:digit}/{answerId:digit}",
             "handler" => ["\Oliver\Question\QuestionController", "acceptAnswer"],
         ],
+        [
+            "info" => "Rank",
+            "method" => "post",
+            "path" => "rank/{type:alphanum}/{targetId:digit}/{rank:digit}",
+            "handler" => ["\Oliver\Question\QuestionController", "rank"],
+        ],
     ]
 ];

@@ -4,6 +4,7 @@ namespace Anax\View;
 ?>
 
 <div class="comment-area">
+    <?php include 'rank-area.php'; ?>
     <img src="https://img.icons8.com/ios-glyphs/25/D8DDE6/topic.png">
     <div class="count">
         <?= count($item->comments) ?>

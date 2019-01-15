@@ -4,3 +4,4 @@
 memory::
 composer.lock
 /config/database.php
+/theme

@@ -16,6 +16,6 @@ $tagText = count($item->tags) > 0 ? "taggar:" : null;
     </p>
 
     <?= $item->text ?>
-
+    
     <?php include 'comment-area.php'; ?>
 </div>

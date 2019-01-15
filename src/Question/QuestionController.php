@@ -65,6 +65,34 @@ class QuestionController implements ContainerInjectableInterface
 
 
 
+    private function createRankArea(string $type, int $targetId)
+    {
+        $rank = new \Oliver\Rank\Rank();
+        $rank->setDb($this->di->get('dbqb'));
+        $rank->setTableName($type);
+
+
+        $rankUpForm = new \Oliver\Rank\HTMLForm\RankForm($this->di, $targetId, 1, $rank, $type);
+        $rankUpForm->check();
+        $rankDownForm = new \Oliver\Rank\HTMLForm\RankForm($this->di, $targetId, -1, $rank, $type);
+        $rankDownForm->check();
+
+        $currentRank = $rank->getRank($targetId);
+
+        $userId = $this->di->get('session')->get('userId');
+
+        $rankUpForm = $rank->didRankUp($userId, $targetId) ? null : $rankUpForm->getHTML();
+        $rankDownForm = $rank->didRankDown($userId, $targetId) ? null : $rankDownForm->getHTML();
+
+        return [
+            "rankUpForm" => $rankUpForm,
+            "rankDownForm" => $rankDownForm,
+            "currentRank" => $currentRank
+        ];
+    }
+
+
+
     public function getQuestion(int $questionId) : object
     {
 
@@ -86,10 +114,24 @@ class QuestionController implements ContainerInjectableInterface
         $commentQuestionForm = new CommentForm($this->di, $question->id, "questionComment");
         $commentQuestionForm->check();
 
+        // $questionRank = new \Oliver\Rank\Rank();
+        // $questionRank->setTableName("question");
+        // $questionRank->setDb($this->di->get('dbqb'));
+        // $rankQuestionUpForm = new \Oliver\Rank\HTMLForm\RankForm($this->di, $questionId, 1, $questionRank);
+        // $rankQuestionUpForm->check();
+        // $rankQuestionDownForm = new \Oliver\Rank\HTMLForm\RankForm($this->di, $questionId, -1, $questionRank);
+        // $rankQuestionDownForm->check();
+
+        // $currentQuestionRank = $questionRank->rank($questionId);
+
+
         $formHTML = $this->di->get('session')->get('userId') ? $commentQuestionForm->getHTML() : null;
+
+        $rankForm = $this->createRankArea("question", $questionId);
         $this->page->add("oliver/questions/question-detail", [
             "item" => $question,
-            "form" => $formHTML
+            "form" => $formHTML,
+            "rankForm" => $rankForm
         ]);
 
         $showAcceptButton = !$this->question->isAccepted() && $question->userId == $this->di->get('session')->get('userId');
@@ -98,10 +140,13 @@ class QuestionController implements ContainerInjectableInterface
         foreach ($question->answers as $answer) {
             $commentAnswerForm = new CommentForm($this->di, $answer->id, "answerComment");
             $formHTML = $this->di->get('session')->get('userId') ? $commentAnswerForm->getHTML() : null;
+            $rankForm = $this->createRankArea("answer", $answer->id);
+            // die(var_dump($rankForm["rankUpForm"]));
             $this->page->add("oliver/questions/answer", [
                 "item" => $answer,
                 "form" => $formHTML,
-                "showAcceptButton" => $showAcceptButton
+                "showAcceptButton" => $showAcceptButton,
+                "rankForm" => $rankForm
             ]);
         }
 
@@ -198,4 +243,23 @@ class QuestionController implements ContainerInjectableInterface
         $this->answer->acceptAnswer($answerId);
         $this->di->get("response")->redirect("questions/${questionId}");
     }
+
+
+// "path" => "rank/{type:string}/{targetId:digit}/{rank:digit}",
+                            // questions/rank/question/1/1
+    public function rank($type, $targetId, $rank)
+    {
+        // echo $type;
+        // echo $targetId;
+        // die($rank);
+
+
+        $rankModel = new \Oliver\Rank\Rank($type);
+        $rankForm = new \Oliver\Rank\HTMLForm\RankForm($this->di, $targetId, $rank, "upordown", $rankModel);
+
+        die("hej");
+        // $this->answer->acceptAnswer($answerId);
+        // $this->di->get("response")->redirect("questions/${questionId}");
+    }
+
 }

@@ -11,7 +11,7 @@ views:
 Om sidan
 =========================
 
-På denna sida diskuterar vi allt som har med den fantastiska filmen The Room att göra. Har du inte sett den är det dags nu. Här följer en kort beskrivning:
+Denna sida är till för att ge svar på de många frågor man får efter att ha sett filmen The Room. Har du inte sett den är det dags nu. Här följer en kort beskrivning:
 
 ![The Room](https://m.media-amazon.com/images/M/MV5BYjEzN2FlYmYtNDkwMC00NGFkLWE5ODctYmE5NmYxNzE2MmRiXkEyXkFqcGdeQXVyMjMwODc5Mw@@._V1_.jpg)
 
@@ -40,4 +40,5 @@ This film centers on Johnny, a man who has it all; great friends, a good job, an
 
 Om mig
 =========================
-Jag heter Oliver Johnsson och ska alldeles strax börja sista termin på min 2-åriga utbildning på BTH. Det ska bli skönt med lite vår!
+
+Hej! Jag heter Oliver Johnsson, är 30 år och bor i Trelleborg. Jag bor i en 2:a tillsammans med min flickvän och vår katt. Jag ska alldeles strax börja sista terminen på min 2-åriga utbildning på BTH.
