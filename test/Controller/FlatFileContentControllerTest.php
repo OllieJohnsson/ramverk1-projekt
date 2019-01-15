@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FlatFileContentControllerTest extends TestCase
 {
-    
+
     // Create the di container.
     protected $di;
     protected $controller;
@@ -48,7 +48,7 @@ class FlatFileContentControllerTest extends TestCase
         $this->assertInstanceOf("\Anax\Response\Response", $res);
 
         $body = $res->getBody();
-        $exp = "| ramverk1</title>";
+        $exp = "| Rummet</title>";
         $this->assertContains($exp, $body);
     }
 }

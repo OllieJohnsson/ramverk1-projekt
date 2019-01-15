@@ -42,3 +42,4 @@ Om mig
 =========================
 
 Hej! Jag heter Oliver Johnsson, är 30 år och bor i Trelleborg. Jag bor i en 2:a tillsammans med min flickvän och vår katt. Jag ska alldeles strax börja sista terminen på min 2-åriga utbildning på BTH.
+[FIGURE src=image/me.jpg?width=500&height=500&crop-to-fit class="roundImage"]

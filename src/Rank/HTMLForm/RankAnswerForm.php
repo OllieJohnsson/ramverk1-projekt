@@ -9,45 +9,27 @@ use \Psr\Container\ContainerInterface;
 /**
  * Form to create an item.
  */
-class RankForm extends FormModel
+class RankAnswerForm extends FormModel
 {
-
-    private $table;
-    private $type;
-
+    private $answer;
     /**
      * Constructor injects with DI container.
      *
      * @param Psr\Container\ContainerInterface $di a service container
      */
-    public function __construct(ContainerInterface $di, int $targetId, int $rank, ActiveRecordModel $table, string $type)
+    public function __construct(ContainerInterface $di, ActiveRecordModel $answer, int $rank)
     {
         parent::__construct($di);
-
-        $this->table = $table;
-        $this->type = $type;
+        $this->answer = $answer;
 
         $userId = $di->get('session')->get('userId');
         $this->form->create(
             [
-                "id" => "rankForm"
+                "id" => "rankAnswerForm"
             ],
             [
-                "targetId" => [
-                    "type"     => "number",
-                    "readonly" => true,
-                    "value"    => $targetId,
-                    "type"     => "hidden",
-                ],
-                "userId" => [
-                    "type"     => "number",
-                    "readonly" => true,
-                    "value"    => $userId,
-                    "type"     => "hidden",
-                ],
                 "rank" => [
                     "type"        => "number",
-                    "placeholder" => "Rank",
                     "readonly" => true,
                     "value"  => $rank,
                     "type"     => "hidden",
@@ -61,7 +43,6 @@ class RankForm extends FormModel
         );
     }
 
-
     /**
      * Callback for submit-button which should return true if it could
      * carry out its work and false if something failed.
@@ -70,14 +51,11 @@ class RankForm extends FormModel
      */
     public function callbackSubmit() : bool
     {
-        $targetId = $this->form->value('targetId');
-        $userId = $this->form->value('userId');
+        $answerId = $this->answer->id;
+        $userId = $this->di->get('session')->get('userId');
         $rank = $this->form->value('rank');
 
-        $this->table->setDb($this->di->get('dbqb'));
-        $this->table->setTableName($this->type);
-
-        $this->table->rank($targetId, $userId, $rank);
+        $this->answer->rank->rank($answerId, $userId, $rank);
         return true;
     }
 
@@ -91,8 +69,8 @@ class RankForm extends FormModel
      */
     public function callbackSuccess()
     {
-        $targetId = $this->form->value('targetId');
-        $this->di->get("response")->redirect("{$this->type}s/{$targetId}")->send();
+        $questionId = $this->form->value('questionId');
+        $this->di->get("response")->redirect("questions/$questionId")->send();
         return true;
     }
 

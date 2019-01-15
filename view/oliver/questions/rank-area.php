@@ -1,11 +1,11 @@
 <?php
 namespace Anax\View;
 
-// var_dump($rankForm);
+// var_dump($item->rank);
 ?>
 
 <div class="rank-area">
-    <?= $rankForm["rankUpForm"] ?>
-    <p class="grayText"><?= $rankForm["currentRank"] ?></p>
-    <?= $rankForm["rankDownForm"] ?>
+    <?= $rankUpForm ?>
+    <p class="grayText"><?= "$item->rankScore poäng" ?></p>
+    <?= $rankDownForm ?>
 </div>

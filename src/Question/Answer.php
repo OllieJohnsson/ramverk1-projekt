@@ -40,7 +40,7 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
                         ->select()
                         ->from($this->tableName)
                         ->where("questionId = $questionId")
-                        ->orderby("posted desc")
+                        ->orderby("posted asc")
                         ->execute()
                         ->fetchAllClass(get_class($this));
 
@@ -48,6 +48,11 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
             $answer->text = $this->markdown($answer->text);
             $answer->creator = $this->di->get("user")->findUser($answer->userId);
             $answer->comments = $this->di->get("comment")->findComments("answerComment", $answer->id);
+            $rank = new \Oliver\Rank\Rank();
+            $rank->setDb($this->di->get('dbqb'));
+            $rank->setTableName("answer");
+            $answer->rank = $rank;
+            $answer->rankScore = $rank->getRank($answer->id) ?: 0;
         }
         return $answers;
     }

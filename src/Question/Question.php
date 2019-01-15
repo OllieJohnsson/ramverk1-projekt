@@ -68,6 +68,12 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
         $question->comments = $this->di->get("comment")->findComments("questionComment", $questionId);
         $question->answers = $this->di->get("answer")->findAnswers($questionId);
 
+        $rank = new \Oliver\Rank\Rank();
+        $rank->setDb($this->di->get('dbqb'));
+        $rank->setTableName("question");
+        $question->rank = $rank;
+        $question->rankScore = $rank->getRank($question->id) ?: 0;
+
         return $question;
     }
 

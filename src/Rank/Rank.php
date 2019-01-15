@@ -43,7 +43,7 @@ class Rank extends ActiveRecordModel
     {
         $this->checkDb();
         return $this->db->connect()
-                        ->select("COALESCE(SUM({$this->tableName}.rankScore), 0) AS rankScore")
+                        ->select("SUM({$this->tableName}.rankScore) AS rankScore")
                         ->from($this->tableName)
                         ->where("targetId = $targetId")
                         ->execute()
@@ -52,13 +52,9 @@ class Rank extends ActiveRecordModel
 
 
 
-    public function didRankUp(int $userId, int $targetId)
+    public function didRank(int $userId, int $targetId)
     {
         return $this->findWhere("userId = ? and targetId = ?", [$userId, $targetId]) ? true : false;
     }
 
-    public function didRankDown(int $userId)
-    {
-        return $this->findWhere("userId = ?", $userId) ? true : false;
-    }
 }
