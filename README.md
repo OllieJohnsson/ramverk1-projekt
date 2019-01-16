@@ -21,9 +21,11 @@
 `composer install`
 
 #### Skapa databasen
-`mysql -uroot -p*ditt root-lösenord* < sql/setup.sql`
-`mysql -uuser -ppass rv1proj < sql/ddl.sql`
-`mysql -uuser -ppass rv1proj < sql/insert.sql`
+```
+mysql -uroot -p*ditt root-lösenord* < sql/setup.sql
+mysql -uuser -ppass rv1proj < sql/ddl.sql
+mysql -uuser -ppass rv1proj < sql/insert.sql
+```
 
 #### Skapa config/database.php med standard-värden
 `rsync -av config/database_sample.php config/database.php`
