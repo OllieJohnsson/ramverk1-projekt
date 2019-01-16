@@ -12,13 +12,19 @@
 # Installation
 
 #### Hämta ner en lokal version
-`git clone https://github.com/OllieJohnsson/ramverk1-projekt`
+```
+git clone https://github.com/OllieJohnsson/ramverk1-projekt
+```
 
 #### Ställ dig i katalogen ramverk1-projekt
-`cd ramverk1-projekt`
+```
+cd ramverk1-projekt
+```
 
 #### Installera dependencies
-`composer install`
+```
+composer install
+```
 
 #### Skapa databasen
 ```
@@ -28,7 +34,9 @@ mysql -uuser -ppass rv1proj < sql/insert.sql
 ```
 
 #### Skapa config/database.php med standard-värden
-`rsync -av config/database_sample.php config/database.php`
+```
+rsync -av config/database_sample.php config/database.php
+```
 
 #### Fixa vendor/anax/database-active-record/src/DatabaseActiveRecord/ActiveRecordModel.php
 Rad 137 returnerar inget.
