@@ -15,17 +15,27 @@ class HomeController implements ContainerInjectableInterface
     {
         $title = "Hem";
 
-        // $this->di->get('page')->add("oliver/header", [
-        //     "title" => $title
-        // ]);
-
         $question = $this->di->get('question');
+        $answer = $this->di->get('answer');
+        $questionComment = $this->di->get('questionComment');
+        $answerComment = $this->di->get('answerComment');
         $tag = $this->di->get('tag');
         $user = $this->di->get('user');
 
         $latestQuestions = $question->findLatestQuestions(5);
         $mostPopularTags = $tag->findMostPopularTags(10);
-        $mostActiveUsers = $user->findMostActiveUsers(5);
+        $mostActiveUsers = $user->findLimit(5);
+
+        foreach ($mostActiveUsers as $user) {
+            $user->noQuestions = count($question->findAllWhere("userId = ?", $user->id));
+            $user->noAnswers = count($answer->findAllWhere("userId = ?", $user->id));
+            $user->noComments = count($questionComment->findAllWhere("userId = ?", $user->id)) + count($answerComment->findAllWhere("userId = ?", $user->id));
+            $user->activity = $user->noQuestions + $user->noAnswers + $user->noComments;
+        }
+        usort($mostActiveUsers, function ($first, $second) {
+            return $second->activity <=> $first->activity;
+        });
+
 
         $this->di->get('page')->add("oliver/home/list-container", [
             "lists" => [
@@ -46,30 +56,6 @@ class HomeController implements ContainerInjectableInterface
                 ]
             ]
         ]);
-
-        // $this->di->get('page')->add("oliver/home/list-header");
-        // foreach ($latestQuestions as $question) {
-        //     $this->di->get('page')->add("oliver/home/latestQuestion", [
-        //         "question" => $question
-        //     ]);
-        // }
-        // $this->di->get('page')->add("oliver/home/list-footer");
-        //
-        // $this->di->get('page')->add("oliver/home/list-header");
-        // foreach ($mostPopularTags as $tag) {
-        //     $this->di->get('page')->add("oliver/home/popularTag", [
-        //         "tag" => $tag
-        //     ]);
-        // }
-        // $this->di->get('page')->add("oliver/home/list-footer");
-        //
-        // $this->di->get('page')->add("oliver/home/list-header");
-        // foreach ($mostActiveUsers as $user) {
-        //     $this->di->get('page')->add("oliver/home/activeUser", [
-        //         "user" => $user
-        //     ]);
-        // }
-        // $this->di->get('page')->add("oliver/home/list-footer");
 
         return $this->di->get('page')->render([
             "title" => $title

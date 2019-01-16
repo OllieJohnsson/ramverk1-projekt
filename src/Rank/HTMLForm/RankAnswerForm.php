@@ -21,8 +21,6 @@ class RankAnswerForm extends FormModel
     {
         parent::__construct($di);
         $this->answer = $answer;
-
-        $userId = $di->get('session')->get('userId');
         $this->form->create(
             [
                 "id" => "rankAnswerForm"

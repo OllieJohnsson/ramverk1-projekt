@@ -3,17 +3,15 @@
 namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
-use Anax\Commons\ContainerInjectableInterface;
-use Anax\Commons\ContainerInjectableTrait;
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class Question extends ActiveRecordModel implements ContainerInjectableInterface
+// class Question extends ActiveRecordModel implements ContainerInjectableInterface
+class Question extends ActiveRecordModel
 {
-    use ContainerInjectableTrait;
     use \Oliver\GravatarTrait;
-    use \Oliver\MarkdownTrait;
+
     /**
      * @var string $tableName name of the database table.
      */
@@ -29,6 +27,23 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
     public $text;
     public $posted;
     public $userId;
+
+    private $user;
+    private $answer;
+    private $tag;
+    private $comment;
+    private $rank;
+    private $textFilter;
+
+    public function init($user, $answer, $tag, $comment, $rank, $textFilter)
+    {
+        $this->user = $user;
+        $this->answer = $answer;
+        $this->tag = $tag;
+        $this->comment = $comment;
+        $this->rank = $rank;
+        $this->textFilter = $textFilter;
+    }
 
 
     public function getLastId()
@@ -49,10 +64,13 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
                         ->execute()
                         ->fetchAllClass(get_class($this));
 
+
         foreach ($questions as $question) {
-            $question->creator = $this->di->get("user")->findUser($question->userId);
-            $question->text = $this->markdown($question->text);
-            $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
+            $question->creator = $this->user->findAllWhere("id = ?", $question->userId)[0];
+            $question->text = $this->textFilter->doFilter($question->text, "markdown");
+            $question->answers = $this->answer->findAnswers($question->id);
+            $question->numberOfAnswers = count($question->answers);
+            $question->latestAnswer = $this->answer->findLatest($question->id);
         }
         return $questions;
     }
@@ -61,18 +79,17 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
 
     public function findQuestion($questionId)
     {
-        $question = $this->findById($questionId);
-        $question->text = $this->markdown($question->text);
-        $question->creator = $this->di->get("user")->findUser($question->userId);
-        $question->tags = $this->di->get("tag")->findTagsForQuestion($questionId);
-        $question->comments = $this->di->get("comment")->findComments("questionComment", $questionId);
-        $question->answers = $this->di->get("answer")->findAnswers($questionId);
+        $question = $this->findAllWhere("id = ?", $questionId)[0];
 
-        $rank = new \Oliver\Rank\Rank();
-        $rank->setDb($this->di->get('dbqb'));
-        $rank->setTableName("question");
-        $question->rank = $rank;
-        $question->rankScore = $rank->getRank($question->id) ?: 0;
+        $question->text = $this->textFilter->doFilter($question->text, "markdown");
+        $question->creator = $this->user->findById($question->userId);
+
+        $question->tags = $this->tag->findTagsForQuestion($questionId);
+        $question->comments = $this->comment->findComments("questionComment", $questionId);
+        $question->answers = $this->answer->findAnswers($question->id);
+
+        $question->rankScore = $this->rank->getRank($question->id) ?: 0;
+
 
         return $question;
     }
@@ -95,9 +112,11 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
                         ->fetchAllClass(get_class($this));
 
         foreach ($questions as $question) {
-            $question->creator = $this->di->get("user")->findUser($question->userId);
-            $question->latestAnswer = $this->di->get("answer")->findAnswers($question->id, 1, 35);
-            $question->numberOfAnswers = $this->di->get("answer")->countAnswers($question->id);
+            $question->creator = $this->user->findAllWhere("id = ?", $question->userId)[0];
+            $question->text = $this->textFilter->doFilter($question->text, "markdown");
+            $question->answers = $this->answer->findAnswers($question->id);
+            $question->numberOfAnswers = count($question->answers);
+            $question->latestAnswer = $this->answer->findLatest($question->id);
         }
         return $questions;
     }
@@ -121,7 +140,7 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
                         ->fetchAllClass(get_class($this));
 
         foreach ($questions as $question) {
-            $question->creator = $this->di->get('user')->findUser($question->userId, 35);
+            $question->creator = $this->user->findUser($question->userId, 35);
         }
         return $questions;
     }
@@ -134,8 +153,7 @@ class Question extends ActiveRecordModel implements ContainerInjectableInterface
 
     public function isAccepted()
     {
-        $answers = $this->di->get('answer')->findAnswers($this->id);
-        foreach ($answers as $answer) {
+        foreach ($this->answers as $answer) {
             if ($answer->accepted) {
                 return true;
             }

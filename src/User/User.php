@@ -3,24 +3,19 @@
 namespace Oliver\User;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
-use Anax\Commons\ContainerInjectableInterface;
-use Anax\Commons\ContainerInjectableTrait;
-
 use \Oliver\GravatarTrait;
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class User extends ActiveRecordModel implements ContainerInjectableInterface
+// class User extends ActiveRecordModel implements ContainerInjectableInterface
+class User extends ActiveRecordModel
 {
-    use ContainerInjectableTrait;
     use GravatarTrait;
     /**
      * @var string $tableName name of the database table.
      */
     protected $tableName = "user";
-
-
 
     /**
      * Columns in the table.
@@ -33,7 +28,6 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
     public $firstName;
     public $lastName;
     public $password;
-
 
 
     /**
@@ -81,7 +75,7 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
 
     public function findUser(int $id) : object
     {
-        return $this->findById($id);
+        return $this->findAllWhere("id = ?", $id)[0];
     }
 
 
@@ -90,29 +84,15 @@ class User extends ActiveRecordModel implements ContainerInjectableInterface
         return $this->db->lastInsertId();
     }
 
-
-    public function findMostActiveUsers(int $limit) : array
+    public function findLimit(int $limit)
     {
-        $users = $this->findAll();
+        $this->checkDb();
+        return $this->db->connect()
+                        ->select()
+                        ->from($this->tableName)
+                        ->limit($limit)
+                        ->execute()
+                        ->fetchAllClass(get_class($this));
 
-        $questionComments = $this->di->get('comment');
-        $questionComments->setTableName("questionComment");
-
-        $answerComments = $this->di->get('comment');
-        $answerComments->setTableName("answerComment");
-
-        foreach ($users as $user) {
-            $user->noQuestions = $this->di->get('question')->countForUser($user->id);
-            $user->noAnswers = $this->di->get('answer')->countForUser($user->id);
-            $user->noComments = $questionComments->countForUser($user->id) + $answerComments->countForUser($user->id);
-        }
-
-        usort($users, function ($first, $second) {
-            $sumFirst = $first->noQuestions + $first->noAnswers + $first->noComments;
-            $sumSecond = $second->noQuestions + $second->noAnswers + $second->noComments;
-            return $sumSecond <=> $sumFirst;
-        });
-
-        return array_slice($users, 0, $limit);
     }
 }

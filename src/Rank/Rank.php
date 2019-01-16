@@ -56,5 +56,4 @@ class Rank extends ActiveRecordModel
     {
         return $this->findWhere("userId = ? and targetId = ?", [$userId, $targetId]) ? true : false;
     }
-
 }

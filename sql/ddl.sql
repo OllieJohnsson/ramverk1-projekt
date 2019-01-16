@@ -49,8 +49,6 @@ CREATE TABLE `answer` (
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
 
 
--- ALTER TABLE `answer` ADD UNIQUE `unique_index`(`questionId`, `accepted`);
-
 
 CREATE TABLE `tag` (
 	`id` INT AUTO_INCREMENT NOT NULL,
@@ -115,83 +113,3 @@ CREATE TABLE questionTag (
 	FOREIGN KEY (questionId) REFERENCES `question`(id),
     FOREIGN KEY (tagId) REFERENCES `tag`(id)
 ) ENGINE INNODB CHARACTER SET UTF8 COLLATE UTF8_swedish_ci;
-
-
-
-
-
--- VIEWS
-
-DROP VIEW IF EXISTS userActivity;
-CREATE VIEW userActivity AS
-SELECT
-    u.id,
-    u.username,
-    u.email,
-    q.numberOfQuestions,
-    a.numberOfAnswers,
-    qc.numberOfQuestionComments,
-    ac.numberOfAnswerComments
-FROM
-    user AS u
-        LEFT JOIN
-    (SELECT
-        userId, COUNT(*) AS numberOfQuestions
-    FROM
-        question
-    GROUP BY userId) AS q ON u.id = q.userId
-        LEFT JOIN
-    (SELECT
-        userId, COUNT(*) AS numberOfAnswers
-    FROM
-        answer
-    GROUP BY userId) AS a ON u.id = a.userId
-        LEFT JOIN
-    (SELECT
-        userId, COUNT(*) AS numberOfQuestionComments
-    FROM
-        questionComment
-    GROUP BY userId) AS qc ON u.id = qc.userId
-        LEFT JOIN
-    (SELECT
-        userId, COUNT(*) AS numberOfAnswerComments
-    FROM
-        answerComment
-    GROUP BY userId) AS ac ON u.id = ac.userId
-;
-
-
--- DROP VIEW IF EXISTS activeUsers;
--- CREATE VIEW activeUsers AS
---     SELECT
---         user.*,
---         (SELECT
---                 COUNT(*)
---             FROM
---                 question
---             WHERE
---                 question.userId = user.id) AS questions,
---         (SELECT
---                 COUNT(*)
---             FROM
---                 answer
---             WHERE
---                 answer.userId = user.id) AS answers,
---         (SELECT
---                 COUNT(*)
---             FROM
---                 questionComment
---             WHERE
---                 questionComment.userId = user.id) AS questionComments,
---         (SELECT
---                 COUNT(*)
---             FROM
---                 answerComment
---             WHERE
---                 answerComment.userId = user.id) AS answerComments
---     FROM
---         user
---             INNER JOIN
---         question AS q ON q.userId = user.id
---     GROUP BY user.id
--- ;

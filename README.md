@@ -11,23 +11,23 @@
 
 # Installation
 
-### Hämta ner en lokal version
+#### Hämta ner en lokal version
 `git clone https://github.com/OllieJohnsson/ramverk1-projekt`
 
-### Ställ dig i katalogen ramverk1-projekt
+#### Ställ dig i katalogen ramverk1-projekt
 `cd ramverk1-projekt`
 
-### Installera dependencies
+#### Installera dependencies
 `composer install`
 
-### Skapa databasen
+#### Skapa databasen
 `mysql -uroot -p*ditt root-lösenord* < sql/setup.sql`
 `mysql -uuser -ppass rv1proj < sql/ddl.sql`
 `mysql -uuser -ppass rv1proj < sql/insert.sql`
 
-### Skapa config/database.php med standard-värden
+#### Skapa config/database.php med standard-värden
 `rsync -av config/database_sample.php config/database.php`
 
-## Fixa vendor/anax/database-active-record/src/DatabaseActiveRecord/ActiveRecordModel.php
+#### Fixa vendor/anax/database-active-record/src/DatabaseActiveRecord/ActiveRecordModel.php
 Rad 137 returnerar inget.
 Ändra från `$this->db->connect()` till `return $this->db->connect()`

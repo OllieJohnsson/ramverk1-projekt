@@ -1,7 +1,8 @@
 <?php
 namespace Oliver;
 
-trait GravatarTrait {
+trait GravatarTrait
+{
     public function gravatar(string $email, int $size = 60) : string
     {
         $rating = 'pg';

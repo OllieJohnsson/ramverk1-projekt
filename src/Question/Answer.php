@@ -3,17 +3,13 @@
 namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
-use Anax\Commons\ContainerInjectableInterface;
-use Anax\Commons\ContainerInjectableTrait;
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class Answer extends ActiveRecordModel implements ContainerInjectableInterface
+class Answer extends ActiveRecordModel
 {
-    use ContainerInjectableTrait;
     use \Oliver\GravatarTrait;
-    use \Oliver\MarkdownTrait;
 
     /**
      * @var string $tableName name of the database table.
@@ -32,6 +28,18 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
     public $userId;
     public $accepted;
 
+    private $textFilter;
+    private $rank;
+    private $user;
+    private $comment;
+
+    public function init($textFilter, $rank, $user, $comment)
+    {
+        $this->textFilter = $textFilter;
+        $this->rank = $rank;
+        $this->user = $user;
+        $this->comment = $comment;
+    }
 
     public function findAnswers(int $questionId) : array
     {
@@ -45,14 +53,10 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
                         ->fetchAllClass(get_class($this));
 
         foreach ($answers as $answer) {
-            $answer->text = $this->markdown($answer->text);
-            $answer->creator = $this->di->get("user")->findUser($answer->userId);
-            $answer->comments = $this->di->get("comment")->findComments("answerComment", $answer->id);
-            $rank = new \Oliver\Rank\Rank();
-            $rank->setDb($this->di->get('dbqb'));
-            $rank->setTableName("answer");
-            $answer->rank = $rank;
-            $answer->rankScore = $rank->getRank($answer->id) ?: 0;
+            $answer->text = $this->textFilter->doFilter($answer->text, "markdown");
+            $answer->creator = $this->user->findUser($answer->userId);
+            $answer->comments = $this->comment->findComments("answerComment", $answer->id);
+            $answer->rankScore = $this->rank->getRank($answer->id) ?: 0;
         }
         return $answers;
     }
@@ -72,7 +76,7 @@ class Answer extends ActiveRecordModel implements ContainerInjectableInterface
         if (!$answer) {
             return null;
         }
-        $answer->creator = $this->di->get('user')->findUser($answer->userId);
+        $answer->creator = $this->user->findUser($answer->userId);
         return $answer;
     }
 

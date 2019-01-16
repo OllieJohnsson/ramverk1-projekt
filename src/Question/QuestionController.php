@@ -46,12 +46,10 @@ class QuestionController implements ContainerInjectableInterface
         ]);
 
         $questions = $this->question->findAllOrderByPosted();
-        foreach ($questions as $question) {
-            $latestAnswer = $this->answer->findLatest($question->id);
 
+        foreach ($questions as $question) {
             $this->page->add("oliver/questions/question", [
-                "item" => $question,
-                "latestAnswer" => $latestAnswer
+                "item" => $question
             ]);
         }
         $this->page->add("oliver/header", [
@@ -85,7 +83,6 @@ class QuestionController implements ContainerInjectableInterface
 
         $question = $this->question->findQuestion($questionId);
 
-
         $commentQuestionForm = new CommentForm($this->di, $question->id, "questionComment");
         $commentQuestionForm->check();
 
@@ -99,11 +96,13 @@ class QuestionController implements ContainerInjectableInterface
         $rankUpFormHTML = null;
         $rankDownFormHTML = null;
 
-        $userId = $this->di->get('session')->get('userId');
-        if ($userId && !$question->rank->didRank($userId, $question->id)) {
-            $rankUpFormHTML = $rankUpForm->getHTML();
-            $rankDownFormHTML = $rankDownForm->getHTML();
-        }
+        // $userId = $this->di->get('session')->get('userId');
+        // if ($userId && !$question->rank->didRank($userId, $question->id)) {
+        //     $rankUpFormHTML = $rankUpForm->getHTML();
+        //     $rankDownFormHTML = $rankDownForm->getHTML();
+        // }
+        $rankUpFormHTML = $rankUpForm->getHTML();
+        $rankDownFormHTML = $rankDownForm->getHTML();
 
         $this->page->add("oliver/questions/question-detail", [
             "item" => $question,
@@ -112,7 +111,7 @@ class QuestionController implements ContainerInjectableInterface
             "rankDownForm" => $rankDownFormHTML
         ]);
 
-        $showAcceptButton = !$this->question->isAccepted() && $question->userId == $this->di->get('session')->get('userId');
+        $showAcceptButton = !$question->isAccepted() && $question->userId == $this->di->get('session')->get('userId');
         $commentAnswerForm = null;
 
 
@@ -125,11 +124,13 @@ class QuestionController implements ContainerInjectableInterface
 
             $rankUpFormHTML = null;
             $rankDownFormHTML = null;
-            if ($userId && !$answer->rank->didRank($userId, $answer->id)) {
-                
-                $rankUpFormHTML = $rankUpForm->getHTML();
-                $rankDownFormHTML = $rankDownForm->getHTML();
-            }
+            // if ($userId && !$answer->rank->didRank($userId, $answer->id)) {
+            //
+            //     $rankUpFormHTML = $rankUpForm->getHTML();
+            //     $rankDownFormHTML = $rankDownForm->getHTML();
+            // }
+            $rankUpFormHTML = $rankUpForm->getHTML();
+            $rankDownFormHTML = $rankDownForm->getHTML();
 
             $this->page->add("oliver/questions/answer", [
                 "item" => $answer,
@@ -240,8 +241,6 @@ class QuestionController implements ContainerInjectableInterface
     public function acceptAnswer($questionId, $answerId)
     {
         $this->answer->acceptAnswer($answerId);
-        $this->di->get("response")->redirect("questions/${questionId}");
+        $this->di->get("response")->redirect("questions/$questionId");
     }
-
-
 }

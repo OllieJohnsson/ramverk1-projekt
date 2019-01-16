@@ -3,15 +3,12 @@
 namespace Oliver\Question;
 
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
-use Anax\Commons\ContainerInjectableInterface;
-use Anax\Commons\ContainerInjectableTrait;
 
 /**
  * A database driven model using the Active Record design pattern.
  */
-class Comment extends ActiveRecordModel implements ContainerInjectableInterface
+class Comment extends ActiveRecordModel
 {
-    use ContainerInjectableTrait;
     /**
      * @var string $tableName name of the database table.
      */
@@ -29,8 +26,18 @@ class Comment extends ActiveRecordModel implements ContainerInjectableInterface
     public $targetId;
     public $userId;
 
+    private $user;
+    private $textFilter;
 
-    public function setTableName(string $tableName)
+
+    public function init(string $tableName, $user, $textFilter)
+    {
+        $this->tableName = $tableName;
+        $this->user = $user;
+        $this->textFilter = $textFilter;
+    }
+
+    public function setTableName($tableName)
     {
         $this->tableName = $tableName;
     }
@@ -42,8 +49,8 @@ class Comment extends ActiveRecordModel implements ContainerInjectableInterface
         $comments = $this->findAllWhere("targetId = ?", $targetId);
 
         foreach ($comments as $comment) {
-            $comment->text = $this->di->get("textfilter")->doFilter($comment->text, "markdown");
-            $comment->creator = $this->di->get("user")->findUser($comment->userId, 30);
+            $comment->text = $this->textFilter->doFilter($comment->text, "markdown");
+            $comment->creator = $this->user->findUser($comment->userId, 30);
         }
         return $comments;
     }

@@ -1,11 +1,11 @@
 <?php
 namespace Anax\View;
 
-$title = isset($latestAnswer) ? "Senaste" : null;
-$latestAnswerUserId = isset($latestAnswer) ? $latestAnswer->creator->id : null;
-$latestAnswerUserName = isset($latestAnswer) ? $latestAnswer->creator->username : null;
-$latestAnswerUserGravatar = isset($latestAnswer) ? $latestAnswer->creator->gravatar($latestAnswer->creator->email, 35) : null;
-$latestAnswerPosted = isset($latestAnswer) ? $latestAnswer->posted : null;
+$title = isset($item->latestAnswer) ? "Senaste" : null;
+$latestAnswerUserId = isset($item->latestAnswer) ? $item->latestAnswer->creator->id : null;
+$latestAnswerUserName = isset($item->latestAnswer) ? $item->latestAnswer->creator->username : null;
+$latestAnswerUserGravatar = isset($item->latestAnswer) ? $item->latestAnswer->creator->gravatar($item->latestAnswer->creator->email, 35) : null;
+$latestAnswerPosted = isset($item->latestAnswer) ? $item->latestAnswer->posted : null;
 ?>
 
 <div class="question">
