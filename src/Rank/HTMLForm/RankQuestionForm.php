@@ -6,7 +6,7 @@ use Anax\HTMLForm\FormModel;
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
 use \Psr\Container\ContainerInterface;
 
-use \Oliver\Question\Question;
+use \Oliver\Rank\Rank;
 
 /**
  * Form to create an item.
@@ -14,17 +14,19 @@ use \Oliver\Question\Question;
 class RankQuestionForm extends FormModel
 {
 
-    private $question;
+    private $rankModel;
     /**
      * Constructor injects with DI container.
      *
      * @param Psr\Container\ContainerInterface $di a service container
      */
-    public function __construct(ContainerInterface $di, Question $question, int $rank)
+    public function __construct(ContainerInterface $di, int $questionId, Rank $rankModel, int $rank)
     {
         parent::__construct($di);
 
-        $this->question = $question;
+        $this->rankModel = $rankModel;
+        $this->rankModel->setTableName("question");
+        $userId = $this->di->get('session')->get('userId');
         $this->form->create(
             [
                 "id" => "rankQuestionForm"
@@ -33,13 +35,13 @@ class RankQuestionForm extends FormModel
                 "questionId" => [
                     "type"     => "number",
                     "readonly" => true,
-                    "value"    => $question->id,
+                    "value"    => $questionId,
                     "type"     => "hidden",
                 ],
                 "userId" => [
                     "type"     => "number",
                     "readonly" => true,
-                    "value"    => $question->userId,
+                    "value"    => $userId,
                     "type"     => "hidden",
                 ],
                 "rank" => [
@@ -67,15 +69,15 @@ class RankQuestionForm extends FormModel
      */
     public function callbackSubmit() : bool
     {
-        $questionId = $this->question->id;
-        $userId = $this->di->get('session')->get('userId');
+        $questionId = $this->form->value('questionId');
+        $userId = $this->form->value('userId');
         $rank = $this->form->value('rank');
 
-        // $rankModel = new \Oliver\Rank\Rank;
-        // $rankModel->setDb($this->di->get('dbqb'));
-        // $rankModel->setTableName("question");
+        $this->rankModel->targetId = $questionId;
+        $this->rankModel->userId = $userId;
+        $this->rankModel->rankScore = $rank;
+        $this->rankModel->save();
 
-        $this->question->rank->rank($questionId, $userId, $rank);
         return true;
     }
 

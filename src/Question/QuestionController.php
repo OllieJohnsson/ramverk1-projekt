@@ -20,6 +20,7 @@ class QuestionController implements ContainerInjectableInterface
     private $question;
     private $answer;
     private $tag;
+    private $questionRank;
 
     public function initialize() : void
     {
@@ -28,6 +29,8 @@ class QuestionController implements ContainerInjectableInterface
         $this->question = $this->di->get('question');
         $this->answer = $this->di->get('answer');
         $this->tag = $this->di->get('tag');
+        $this->questionRank = $this->di->get('questionRank');
+        $this->userId = $this->di->get('session')->get('userId');
     }
 
 
@@ -80,29 +83,24 @@ class QuestionController implements ContainerInjectableInterface
             "action" => $action
         ]);
 
-
         $question = $this->question->findQuestion($questionId);
 
         $commentQuestionForm = new CommentForm($this->di, $question->id, "questionComment");
         $commentQuestionForm->check();
 
-        $rankUpForm = new \Oliver\Rank\HTMLForm\RankQuestionForm($this->di, $question, 1);
+        $rankUpForm = new \Oliver\Rank\HTMLForm\RankQuestionForm($this->di, $questionId, $this->questionRank, 1);
         $rankUpForm->check();
-        $rankDownForm = new \Oliver\Rank\HTMLForm\RankQuestionForm($this->di, $question, -1);
+        $rankDownForm = new \Oliver\Rank\HTMLForm\RankQuestionForm($this->di, $questionId, $this->questionRank, -1);
         $rankDownForm->check();
 
-
-        $formHTML = $this->di->get('session')->get('userId') ? $commentQuestionForm->getHTML() : null;
+        $formHTML = $this->userId ? $commentQuestionForm->getHTML() : null;
         $rankUpFormHTML = null;
         $rankDownFormHTML = null;
 
-        // $userId = $this->di->get('session')->get('userId');
-        // if ($userId && !$question->rank->didRank($userId, $question->id)) {
-        //     $rankUpFormHTML = $rankUpForm->getHTML();
-        //     $rankDownFormHTML = $rankDownForm->getHTML();
-        // }
-        $rankUpFormHTML = $rankUpForm->getHTML();
-        $rankDownFormHTML = $rankDownForm->getHTML();
+        if ($this->userId && !$this->questionRank->didRank($this->userId, $question->id)) {
+            $rankUpFormHTML = $rankUpForm->getHTML();
+            $rankDownFormHTML = $rankDownForm->getHTML();
+        }
 
         $this->page->add("oliver/questions/question-detail", [
             "item" => $question,
@@ -119,18 +117,15 @@ class QuestionController implements ContainerInjectableInterface
             $commentAnswerForm = new CommentForm($this->di, $answer->id, "answerComment");
             $formHTML = $this->di->get('session')->get('userId') ? $commentAnswerForm->getHTML() : null;
 
-            $rankUpForm = new \Oliver\Rank\HTMLForm\RankAnswerForm($this->di, $answer, 1);
-            $rankDownForm = new \Oliver\Rank\HTMLForm\RankAnswerForm($this->di, $answer, -1);
+            $rankUpForm = new \Oliver\Rank\HTMLForm\RankAnswerForm($this->di, $answer->questionId, $answer->id, $this->questionRank, 1);
+            $rankDownForm = new \Oliver\Rank\HTMLForm\RankAnswerForm($this->di, $answer->questionId, $answer->id, $this->questionRank, -1);
 
             $rankUpFormHTML = null;
             $rankDownFormHTML = null;
-            // if ($userId && !$answer->rank->didRank($userId, $answer->id)) {
-            //
-            //     $rankUpFormHTML = $rankUpForm->getHTML();
-            //     $rankDownFormHTML = $rankDownForm->getHTML();
-            // }
-            $rankUpFormHTML = $rankUpForm->getHTML();
-            $rankDownFormHTML = $rankDownForm->getHTML();
+            if ($this->userId && !$this->questionRank->didRank($this->userId, $answer->id)) {
+                $rankUpFormHTML = $rankUpForm->getHTML();
+                $rankDownFormHTML = $rankDownForm->getHTML();
+            }
 
             $this->page->add("oliver/questions/answer", [
                 "item" => $answer,

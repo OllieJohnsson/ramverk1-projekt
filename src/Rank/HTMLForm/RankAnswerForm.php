@@ -6,28 +6,51 @@ use Anax\HTMLForm\FormModel;
 use Anax\DatabaseActiveRecord\ActiveRecordModel;
 use \Psr\Container\ContainerInterface;
 
+use \Oliver\Rank\Rank;
+
 /**
  * Form to create an item.
  */
 class RankAnswerForm extends FormModel
 {
-    private $answer;
+    private $rankModel;
     /**
      * Constructor injects with DI container.
      *
      * @param Psr\Container\ContainerInterface $di a service container
      */
-    public function __construct(ContainerInterface $di, ActiveRecordModel $answer, int $rank)
+    public function __construct(ContainerInterface $di, int $questionId, int $answerId, Rank $rankModel, int $rank)
     {
         parent::__construct($di);
-        $this->answer = $answer;
+        $this->rankModel = $rankModel;
+        $this->rankModel->setTableName("answer");
+        $userId = $this->di->get('session')->get('userId');
         $this->form->create(
             [
                 "id" => "rankAnswerForm"
             ],
             [
+                "answerId" => [
+                    "type"     => "number",
+                    "readonly" => true,
+                    "value"    => $answerId,
+                    "type"     => "hidden",
+                ],
+                "questionId" => [
+                    "type"     => "number",
+                    "readonly" => true,
+                    "value"    => $questionId,
+                    "type"     => "hidden",
+                ],
+                "userId" => [
+                    "type"     => "number",
+                    "readonly" => true,
+                    "value"    => $userId,
+                    "type"     => "hidden",
+                ],
                 "rank" => [
                     "type"        => "number",
+                    "placeholder" => "Rank",
                     "readonly" => true,
                     "value"  => $rank,
                     "type"     => "hidden",
@@ -47,16 +70,19 @@ class RankAnswerForm extends FormModel
      *
      * @return bool true if okey, false if something went wrong.
      */
-    public function callbackSubmit() : bool
-    {
-        $answerId = $this->answer->id;
-        $userId = $this->di->get('session')->get('userId');
-        $rank = $this->form->value('rank');
+     public function callbackSubmit() : bool
+     {
+         $answerId = $this->form->value('answerId');
+         $userId = $this->form->value('userId');
+         $rank = $this->form->value('rank');
 
-        $this->answer->rank->rank($answerId, $userId, $rank);
-        return true;
-    }
+         $this->rankModel->targetId = $answerId;
+         $this->rankModel->userId = $userId;
+         $this->rankModel->rankScore = $rank;
+         $this->rankModel->save();
 
+         return true;
+     }
 
 
 

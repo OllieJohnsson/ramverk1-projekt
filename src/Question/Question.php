@@ -89,8 +89,6 @@ class Question extends ActiveRecordModel
         $question->answers = $this->answer->findAnswers($question->id);
 
         $question->rankScore = $this->rank->getRank($question->id) ?: 0;
-
-
         return $question;
     }
 

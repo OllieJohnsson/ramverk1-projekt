@@ -30,15 +30,6 @@ class Rank extends ActiveRecordModel
     public $rankScore;
 
 
-    public function rank($targetId, $userId, $rank)
-    {
-        $this->targetId = $targetId;
-        $this->userId = $userId;
-        $this->rankScore = $rank;
-        $this->save();
-    }
-
-
     public function getRank(int $targetId)
     {
         $this->checkDb();
